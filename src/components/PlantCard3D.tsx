@@ -1,10 +1,10 @@
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Text } from '@react-three/drei';
+import { OrbitControls, Environment } from '@react-three/drei';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Heart, Share2, BookOpen, Leaf } from 'lucide-react';
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 
 // Simple 3D Plant Model Component
 function PlantModel({ color = '#22c55e' }: { color?: string }) {
@@ -82,8 +82,30 @@ interface PlantCard3DProps {
 export function PlantCard3D({ plant, onBookmark, onShare, onLearnMore }: PlantCard3DProps) {
   const [isBookmarked, setIsBookmarked] = useState(false);
 
+  useEffect(() => {
+    // Check if plant is bookmarked on component mount
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPlants') || '[]');
+    setIsBookmarked(bookmarks.includes(plant.id));
+  }, [plant.id]);
+
   const handleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
+    const newBookmarkState = !isBookmarked;
+    setIsBookmarked(newBookmarkState);
+    
+    // Update localStorage
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPlants') || '[]');
+    if (newBookmarkState) {
+      if (!bookmarks.includes(plant.id)) {
+        bookmarks.push(plant.id);
+      }
+    } else {
+      const index = bookmarks.indexOf(plant.id);
+      if (index > -1) {
+        bookmarks.splice(index, 1);
+      }
+    }
+    localStorage.setItem('bookmarkedPlants', JSON.stringify(bookmarks));
+    
     onBookmark?.(plant.id);
   };
 
@@ -92,8 +114,9 @@ export function PlantCard3D({ plant, onBookmark, onShare, onLearnMore }: PlantCa
       {/* 3D Plant Display */}
       <div className="h-64 relative overflow-hidden bg-gradient-botanical">
         <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
-          <ambientLight intensity={0.6} />
-          <pointLight position={[10, 10, 10]} intensity={0.8} />
+          <Environment preset="sunset" />
+          <ambientLight intensity={0.4} />
+          <directionalLight position={[10, 10, 10]} intensity={0.8} />
           <pointLight position={[-10, -10, -10]} intensity={0.3} />
           
           <Suspense fallback={null}>
@@ -103,7 +126,9 @@ export function PlantCard3D({ plant, onBookmark, onShare, onLearnMore }: PlantCa
               enablePan={false}
               enableRotate={true}
               autoRotate
-              autoRotateSpeed={1}
+              autoRotateSpeed={0.8}
+              minDistance={2}
+              maxDistance={6}
             />
           </Suspense>
         </Canvas>

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { HeroSection } from '@/components/HeroSection';
 import { SearchFilters } from '@/components/SearchFilters';
 import { PlantCard3D } from '@/components/PlantCard3D';
@@ -8,6 +9,7 @@ import { ArrowUp, Leaf } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -43,21 +45,40 @@ const Index = () => {
   };
 
   const handleBookmark = (plantId: string) => {
-    toast({
-      title: "Plant bookmarked!",
-      description: "Added to your personal herbal collection.",
-    });
-  };
-
-  const handleShare = (plantId: string) => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'HerbaVerse Plant',
-        text: 'Check out this medicinal plant on HerbaVerse',
-        url: window.location.href,
+    // Get current bookmarks from localStorage
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPlants') || '[]');
+    
+    if (!bookmarks.includes(plantId)) {
+      bookmarks.push(plantId);
+      localStorage.setItem('bookmarkedPlants', JSON.stringify(bookmarks));
+      toast({
+        title: "Plant bookmarked!",
+        description: "Added to your personal herbal collection.",
       });
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "Already bookmarked!",
+        description: "This plant is already in your collection.",
+      });
+    }
+  };
+
+  const handleShare = async (plantId: string) => {
+    const plant = allPlants.find(p => p.id === plantId);
+    const shareUrl = `${window.location.origin}/plant/${plantId}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${plant?.name} - HerbaVerse`,
+          text: `Discover ${plant?.name} and its medicinal properties on HerbaVerse`,
+          url: shareUrl,
+        });
+      } catch (error) {
+        // User cancelled sharing
+      }
+    } else {
+      await navigator.clipboard.writeText(shareUrl);
       toast({
         title: "Link copied!",
         description: "Plant link copied to clipboard.",
@@ -66,10 +87,7 @@ const Index = () => {
   };
 
   const handleLearnMore = (plantId: string) => {
-    toast({
-      title: "Coming soon!",
-      description: "Detailed plant information page is being developed.",
-    });
+    navigate(`/plant/${plantId}`);
   };
 
   // Handle scroll for show/hide scroll-to-top button

@@ -1,6 +1,9 @@
 import aloeVeraImage from '@/assets/aloe-vera.jpg';
+import realAloeVeraImage from '@/assets/real-aloe-vera.jpg';
 import turmericImage from '@/assets/turmeric.jpg';
+import realTurmericImage from '@/assets/real-turmeric.jpg';
 import neemImage from '@/assets/neem.jpg';
+import realNeemImage from '@/assets/real-neem.jpg';
 
 export interface Plant {
   id: string;
@@ -9,6 +12,7 @@ export interface Plant {
   description: string;
   uses: string[];
   image: string;
+  realImages?: string[]; // Array of real plant photos
   color?: string;
   habitat: string;
   cultivation: string;
@@ -33,6 +37,7 @@ export const plantsData: Plant[] = [
     description: "A succulent plant species known for its thick, fleshy leaves containing a clear gel with remarkable healing properties. Widely used in traditional medicine for skin conditions and digestive health.",
     uses: ["Skin Care", "Digestive Health", "Anti-inflammatory", "Wound Healing", "Burns Treatment"],
     image: aloeVeraImage,
+    realImages: [realAloeVeraImage],
     color: "#22c55e",
     habitat: "Native to Arabian Peninsula, now cultivated worldwide in tropical and subtropical regions",
     cultivation: "Requires well-draining soil, bright indirect sunlight, and minimal watering. Drought-tolerant and easy to grow indoors.",
@@ -58,6 +63,7 @@ export const plantsData: Plant[] = [
     description: "A flowering plant of the ginger family, renowned for its golden-yellow rhizome containing curcumin, a powerful anti-inflammatory and antioxidant compound used in cooking and medicine.",
     uses: ["Anti-inflammatory", "Antioxidant", "Immunity", "Digestive Health", "Pain Relief", "Skin Care"],
     image: turmericImage,
+    realImages: [realTurmericImage],
     color: "#f59e0b",
     habitat: "Native to Southeast Asia, primarily cultivated in India, Thailand, and other tropical regions",
     cultivation: "Requires warm, humid climate with well-drained soil. Grows best in temperatures between 20-30°C with adequate rainfall.",
@@ -83,6 +89,7 @@ export const plantsData: Plant[] = [
     description: "Known as the 'Divine Tree' in Ayurveda, neem is a powerful medicinal tree with antibacterial, antifungal, and antiviral properties. Every part of the tree has therapeutic value.",
     uses: ["Skin Care", "Immunity", "Anti-bacterial", "Anti-fungal", "Oral Health", "Pest Control"],
     image: neemImage,
+    realImages: [realNeemImage],
     color: "#059669",
     habitat: "Native to Indian subcontinent, now found throughout tropical and semi-tropical regions",
     cultivation: "Highly adaptable tree that grows in various soil types. Drought-resistant and requires minimal care once established.",
