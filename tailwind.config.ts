@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -52,6 +53,14 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Garden-specific colors
+				garden: {
+					emerald: 'hsl(var(--garden-emerald))',
+					mint: 'hsl(var(--garden-mint))',
+					sage: 'hsl(var(--garden-sage))',
+					earth: 'hsl(var(--garden-earth))',
+					sunset: 'hsl(var(--garden-sunset))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -67,6 +76,20 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			backgroundImage: {
+				'gradient-garden': 'var(--gradient-garden)',
+				'gradient-earth': 'var(--gradient-earth)',
+				'gradient-botanical': 'var(--gradient-botanical)'
+			},
+			boxShadow: {
+				'garden': 'var(--shadow-garden)',
+				'botanical': 'var(--shadow-botanical)',
+				'leaf': 'var(--shadow-leaf)'
+			},
+			transitionTimingFunction: {
+				'garden': 'var(--transition-garden)',
+				'smooth': 'var(--transition-smooth)'
 			},
 			keyframes: {
 				'accordion-down': {
