@@ -1,0 +1,76 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "search": "Search",
+    "filter": "Filter",
+    "share": "Share",
+    "bookmark": "Bookmark",
+    "notes": "Notes",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "navigation": {
+    "home": "Home",
+    "aiSuggestions": "AI Suggestions",
+    "quiz": "Quiz",
+    "tours": "Virtual Tours",
+    "remedies": "Remedies",
+    "myNotes": "My Notes"
+  },
+  "plants": {
+    "name": "Plant Name",
+    "scientificName": "Scientific Name",
+    "description": "Description",
+    "uses": "Uses",
+    "medicinalParts": "Medicinal Parts",
+    "preparationMethods": "Preparation Methods",
+    "dosage": "Dosage",
+    "precautions": "Precautions",
+    "ayurvedic": "Ayurvedic Properties"
+  },
+  "ai": {
+    "askAboutHealth": "Ask about your health concerns",
+    "placeholder": "e.g., I have a cough and sore throat",
+    "getRecommendations": "Get Plant Recommendations",
+    "recommendations": "Recommended Plants",
+    "confidence": "Confidence"
+  },
+  "quiz": {
+    "title": "Plant Knowledge Quiz",
+    "start": "Start Quiz",
+    "question": "Question",
+    "submit": "Submit Answer",
+    "next": "Next Question",
+    "score": "Score",
+    "completed": "Quiz Completed!",
+    "badges": "Badges Earned"
+  },
+  "tours": {
+    "title": "Virtual Garden Tours",
+    "digestiveHealth": "Digestive Health",
+    "immunity": "Immunity Boosters",
+    "skinCare": "Skin Care",
+    "respiratory": "Respiratory Health",
+    "startTour": "Start Tour",
+    "contineTour": "Continue Tour",
+    "progress": "Progress"
+  },
+  "auth": {
+    "signInTitle": "Sign in to HerbaVerse",
+    "signUpTitle": "Create your HerbaVerse account",
+    "displayName": "Display Name",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "signInHere": "Sign in here",
+    "signUpHere": "Sign up here"
+  }
+}

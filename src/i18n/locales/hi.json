@@ -1,0 +1,76 @@
+{
+  "common": {
+    "welcome": "स्वागत है",
+    "login": "लॉगिन",
+    "signup": "साइन अप",
+    "logout": "लॉगआउट", 
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "name": "नाम",
+    "loading": "लोड हो रहा है...",
+    "save": "सेव करें",
+    "cancel": "रद्द करें",
+    "search": "खोजें",
+    "filter": "फिल्टर",
+    "share": "साझा करें",
+    "bookmark": "बुकमार्क",
+    "notes": "नोट्स",
+    "profile": "प्रोफाइल",
+    "settings": "सेटिंग्स"
+  },
+  "navigation": {
+    "home": "होम",
+    "aiSuggestions": "AI सुझाव",
+    "quiz": "क्विज़",
+    "tours": "वर्चुअल टूर",
+    "remedies": "घरेलू उपचार",
+    "myNotes": "मेरे नोट्स"
+  },
+  "plants": {
+    "name": "पौधे का नाम",
+    "scientificName": "वैज्ञानिक नाम",
+    "description": "विवरण",
+    "uses": "उपयोग",
+    "medicinalParts": "औषधीय भाग",
+    "preparationMethods": "तैयारी की विधि",
+    "dosage": "खुराक",
+    "precautions": "सावधानियां",
+    "ayurvedic": "आयुर्वेदिक गुण"
+  },
+  "ai": {
+    "askAboutHealth": "अपनी स्वास्थ्य समस्या के बारे में पूछें",
+    "placeholder": "जैसे, मुझे खांसी और गले में दर्द है",
+    "getRecommendations": "पौधों की सिफारिश पाएं",
+    "recommendations": "सुझाए गए पौधे",
+    "confidence": "विश्वसनीयता"
+  },
+  "quiz": {
+    "title": "पौधों की जानकारी क्विज़",
+    "start": "क्विज़ शुरू करें",
+    "question": "प्रश्न",
+    "submit": "उत्तर जमा करें",
+    "next": "अगला प्रश्न",
+    "score": "स्कोर",
+    "completed": "क्विज़ पूरी हुई!",
+    "badges": "अर्जित बैज"
+  },
+  "tours": {
+    "title": "वर्चुअल गार्डन टूर",
+    "digestiveHealth": "पाचन स्वास्थ्य",
+    "immunity": "इम्यूनिटी बूस्टर",
+    "skinCare": "त्वचा की देखभाल",
+    "respiratory": "श्वसन स्वास्थ्य",
+    "startTour": "टूर शुरू करें",
+    "contineTour": "टूर जारी रखें",
+    "progress": "प्रगति"
+  },
+  "auth": {
+    "signInTitle": "HerbaVerse में साइन इन करें",
+    "signUpTitle": "अपना HerbaVerse अकाउंट बनाएं",
+    "displayName": "प्रदर्शन नाम",
+    "alreadyHaveAccount": "पहले से अकाउंट है?",
+    "dontHaveAccount": "अकाउंट नहीं है?",
+    "signInHere": "यहां साइन इन करें",
+    "signUpHere": "यहां साइन अप करें"
+  }
+}

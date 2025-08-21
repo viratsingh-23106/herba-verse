@@ -7,6 +7,9 @@ import { plantsData, additionalPlants } from '@/data/plantsData';
 import { Button } from '@/components/ui/button';
 import { ArrowUp, Leaf } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -15,6 +18,8 @@ const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const plantsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { t } = useLanguage();
 
   // Combine demo plants with additional ones
   const allPlants = [...plantsData, ...additionalPlants];
@@ -44,21 +49,61 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleBookmark = (plantId: string) => {
-    // Get current bookmarks from localStorage
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPlants') || '[]');
-    
-    if (!bookmarks.includes(plantId)) {
-      bookmarks.push(plantId);
-      localStorage.setItem('bookmarkedPlants', JSON.stringify(bookmarks));
+  const handleBookmark = async (plantId: string) => {
+    if (!user) {
       toast({
-        title: "Plant bookmarked!",
-        description: "Added to your personal herbal collection.",
+        title: "Authentication Required",
+        description: "Please sign in to bookmark plants",
+        action: (
+          <Button onClick={() => navigate('/auth')} variant="outline" size="sm">
+            Sign In
+          </Button>
+        ),
       });
-    } else {
+      return;
+    }
+
+    try {
+      // Check if already bookmarked
+      const { data: existingBookmark } = await supabase
+        .from('user_bookmarks')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('plant_id', plantId)
+        .single();
+
+      if (existingBookmark) {
+        // Remove bookmark
+        await supabase
+          .from('user_bookmarks')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('plant_id', plantId);
+        
+        toast({
+          title: "Bookmark removed",
+          description: "Plant removed from your bookmarks",
+        });
+      } else {
+        // Add bookmark
+        await supabase
+          .from('user_bookmarks')
+          .insert({
+            user_id: user.id,
+            plant_id: plantId
+          });
+        
+        toast({
+          title: "Plant bookmarked!",
+          description: "Added to your personal collection",
+        });
+      }
+    } catch (error) {
+      console.error('Bookmark error:', error);
       toast({
-        title: "Already bookmarked!",
-        description: "This plant is already in your collection.",
+        title: "Error",
+        description: "Failed to update bookmark. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -113,7 +158,7 @@ const Index = () => {
             </div>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Explore Medicinal Plants
+            {t('common.welcome')} - Explore Medicinal Plants
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Discover the healing power of traditional herbal medicine through our interactive 3D plant collection
