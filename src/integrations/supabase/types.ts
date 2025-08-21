@@ -14,7 +14,496 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      badges: {
+        Row: {
+          badge_type: Database["public"]["Enums"]["badge_type"]
+          created_at: string | null
+          description_en: string | null
+          description_hi: string | null
+          icon_url: string | null
+          id: string
+          name_en: string
+          name_hi: string | null
+          points: number | null
+          requirements: Json
+        }
+        Insert: {
+          badge_type: Database["public"]["Enums"]["badge_type"]
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          icon_url?: string | null
+          id?: string
+          name_en: string
+          name_hi?: string | null
+          points?: number | null
+          requirements: Json
+        }
+        Update: {
+          badge_type?: Database["public"]["Enums"]["badge_type"]
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          icon_url?: string | null
+          id?: string
+          name_en?: string
+          name_hi?: string | null
+          points?: number | null
+          requirements?: Json
+        }
+        Relationships: []
+      }
+      health_conditions: {
+        Row: {
+          created_at: string | null
+          description_en: string | null
+          description_hi: string | null
+          id: string
+          keywords: string[] | null
+          name_en: string
+          name_hi: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          id?: string
+          keywords?: string[] | null
+          name_en: string
+          name_hi?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          id?: string
+          keywords?: string[] | null
+          name_en?: string
+          name_hi?: string | null
+        }
+        Relationships: []
+      }
+      plant_recommendations: {
+        Row: {
+          ai_response: string | null
+          created_at: string | null
+          health_condition_id: string | null
+          id: string
+          query_text: string
+          recommended_plants: Json
+          user_id: string | null
+        }
+        Insert: {
+          ai_response?: string | null
+          created_at?: string | null
+          health_condition_id?: string | null
+          id?: string
+          query_text: string
+          recommended_plants: Json
+          user_id?: string | null
+        }
+        Update: {
+          ai_response?: string | null
+          created_at?: string | null
+          health_condition_id?: string | null
+          id?: string
+          query_text?: string
+          recommended_plants?: Json
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plant_recommendations_health_condition_id_fkey"
+            columns: ["health_condition_id"]
+            isOneToOne: false
+            referencedRelation: "health_conditions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string
+          preferred_language: string | null
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id: string
+          preferred_language?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          preferred_language?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      quizzes: {
+        Row: {
+          created_at: string | null
+          description_en: string | null
+          description_hi: string | null
+          difficulty_level: number | null
+          id: string
+          is_active: boolean | null
+          questions: Json
+          quiz_type: Database["public"]["Enums"]["quiz_type"]
+          title_en: string
+          title_hi: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          difficulty_level?: number | null
+          id?: string
+          is_active?: boolean | null
+          questions: Json
+          quiz_type: Database["public"]["Enums"]["quiz_type"]
+          title_en: string
+          title_hi?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          difficulty_level?: number | null
+          id?: string
+          is_active?: boolean | null
+          questions?: Json
+          quiz_type?: Database["public"]["Enums"]["quiz_type"]
+          title_en?: string
+          title_hi?: string | null
+        }
+        Relationships: []
+      }
+      tour_stops: {
+        Row: {
+          content_en: string | null
+          content_hi: string | null
+          created_at: string | null
+          id: string
+          interactive_elements: Json | null
+          learning_objectives: string[] | null
+          plant_id: string
+          stop_order: number
+          title_en: string
+          title_hi: string | null
+          tour_id: string | null
+        }
+        Insert: {
+          content_en?: string | null
+          content_hi?: string | null
+          created_at?: string | null
+          id?: string
+          interactive_elements?: Json | null
+          learning_objectives?: string[] | null
+          plant_id: string
+          stop_order: number
+          title_en: string
+          title_hi?: string | null
+          tour_id?: string | null
+        }
+        Update: {
+          content_en?: string | null
+          content_hi?: string | null
+          created_at?: string | null
+          id?: string
+          interactive_elements?: Json | null
+          learning_objectives?: string[] | null
+          plant_id?: string
+          stop_order?: number
+          title_en?: string
+          title_hi?: string | null
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_stops_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "virtual_tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_badges: {
+        Row: {
+          badge_id: string | null
+          earned_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          badge_id?: string | null
+          earned_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          badge_id?: string | null
+          earned_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_bookmarks: {
+        Row: {
+          created_at: string | null
+          id: string
+          plant_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          plant_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          plant_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_plant_notes: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          is_private: boolean | null
+          plant_id: string
+          tags: string[] | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_private?: boolean | null
+          plant_id: string
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_private?: boolean | null
+          plant_id?: string
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_quiz_scores: {
+        Row: {
+          completed_at: string | null
+          id: string
+          quiz_id: string | null
+          score: number
+          time_taken: number | null
+          total_questions: number
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          quiz_id?: string | null
+          score: number
+          time_taken?: number | null
+          total_questions: number
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          quiz_id?: string | null
+          score?: number
+          time_taken?: number | null
+          total_questions?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_quiz_scores_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_remedies: {
+        Row: {
+          created_at: string | null
+          description_en: string | null
+          description_hi: string | null
+          dosage: string | null
+          effectiveness_rating: number | null
+          id: string
+          image_urls: string[] | null
+          ingredients: Json | null
+          is_approved: boolean | null
+          is_public: boolean | null
+          precautions: string | null
+          preparation_method: string | null
+          title_en: string
+          title_hi: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          dosage?: string | null
+          effectiveness_rating?: number | null
+          id?: string
+          image_urls?: string[] | null
+          ingredients?: Json | null
+          is_approved?: boolean | null
+          is_public?: boolean | null
+          precautions?: string | null
+          preparation_method?: string | null
+          title_en: string
+          title_hi?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          dosage?: string | null
+          effectiveness_rating?: number | null
+          id?: string
+          image_urls?: string[] | null
+          ingredients?: Json | null
+          is_approved?: boolean | null
+          is_public?: boolean | null
+          precautions?: string | null
+          preparation_method?: string | null
+          title_en?: string
+          title_hi?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_tour_progress: {
+        Row: {
+          completed_at: string | null
+          completed_stops: number[] | null
+          current_stop: number | null
+          id: string
+          progress_percentage: number | null
+          started_at: string | null
+          tour_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_stops?: number[] | null
+          current_stop?: number | null
+          id?: string
+          progress_percentage?: number | null
+          started_at?: string | null
+          tour_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          completed_stops?: number[] | null
+          current_stop?: number | null
+          id?: string
+          progress_percentage?: number | null
+          started_at?: string | null
+          tour_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_tour_progress_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "virtual_tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      virtual_tours: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string | null
+          description_en: string | null
+          description_hi: string | null
+          difficulty_level: number | null
+          estimated_duration: number | null
+          id: string
+          is_active: boolean | null
+          theme: string
+          title_en: string
+          title_hi: string | null
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          difficulty_level?: number | null
+          estimated_duration?: number | null
+          id?: string
+          is_active?: boolean | null
+          theme: string
+          title_en: string
+          title_hi?: string | null
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          difficulty_level?: number | null
+          estimated_duration?: number | null
+          id?: string
+          is_active?: boolean | null
+          theme?: string
+          title_en?: string
+          title_hi?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +512,17 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      badge_type:
+        | "beginner"
+        | "intermediate"
+        | "advanced"
+        | "expert"
+        | "specialist"
+      quiz_type:
+        | "image_identification"
+        | "name_matching"
+        | "medicinal_uses"
+        | "ayurvedic_properties"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +649,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      badge_type: [
+        "beginner",
+        "intermediate",
+        "advanced",
+        "expert",
+        "specialist",
+      ],
+      quiz_type: [
+        "image_identification",
+        "name_matching",
+        "medicinal_uses",
+        "ayurvedic_properties",
+      ],
+    },
   },
 } as const
