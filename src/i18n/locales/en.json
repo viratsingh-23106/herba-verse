@@ -16,7 +16,25 @@
     "bookmark": "Bookmark",
     "notes": "Notes",
     "profile": "Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "update": "Update",
+    "add": "Add",
+    "remove": "Remove",
+    "view": "View",
+    "close": "Close",
+    "submit": "Submit",
+    "reset": "Reset",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "noData": "No data available",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information"
   },
   "navigation": {
     "home": "Home",
@@ -25,6 +43,12 @@
     "tours": "Virtual Tours",
     "remedies": "Remedies",
     "myNotes": "My Notes"
+  },
+  "hero": {
+    "title": "Discover the Healing Power of Nature",
+    "subtitle": "Explore medicinal plants through interactive 3D models and AI-powered recommendations",
+    "exploreButton": "Explore Plants",
+    "learnMoreButton": "Learn More"
   },
   "plants": {
     "name": "Plant Name",
@@ -35,14 +59,109 @@
     "preparationMethods": "Preparation Methods",
     "dosage": "Dosage",
     "precautions": "Precautions",
-    "ayurvedic": "Ayurvedic Properties"
+    "ayurvedic": "Ayurvedic Properties",
+    "habitat": "Habitat",
+    "cultivation": "Cultivation",
+    "references": "References",
+    "showingResults": "Showing {count} plants",
+    "noResults": "No plants found",
+    "clearFilters": "Clear All Filters"
+  },
+  "profile": {
+    "title": "My Profile",
+    "editProfile": "Edit Profile",
+    "displayName": "Display Name",
+    "username": "Username",
+    "email": "Email",
+    "preferredLanguage": "Preferred Language",
+    "avatar": "Profile Picture",
+    "joinedDate": "Member since",
+    "statistics": "Your Statistics",
+    "bookmarkedPlants": "Bookmarked Plants",
+    "notesWritten": "Notes Written",
+    "quizzesTaken": "Quizzes Taken",
+    "toursCompleted": "Tours Completed",
+    "badgesEarned": "Badges Earned",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Failed to update profile"
+  },
+  "notes": {
+    "title": "My Notes",
+    "createNote": "Create New Note",
+    "editNote": "Edit Note",
+    "noteTitle": "Note Title",
+    "noteContent": "Note Content",
+    "tags": "Tags",
+    "isPrivate": "Private Note",
+    "plantName": "Plant",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "noNotes": "You haven't written any notes yet",
+    "createFirstNote": "Create your first note",
+    "deleteConfirm": "Are you sure you want to delete this note?",
+    "saveSuccess": "Note saved successfully",
+    "saveError": "Failed to save note",
+    "deleteSuccess": "Note deleted successfully",
+    "deleteError": "Failed to delete note"
+  },
+  "remedies": {
+    "title": "Traditional Remedies",
+    "myRemedies": "My Remedies",
+    "createRemedy": "Share a Remedy",
+    "editRemedy": "Edit Remedy",
+    "remedyTitle": "Remedy Title",
+    "description": "Description",
+    "ingredients": "Ingredients",
+    "preparationMethod": "Preparation Method",
+    "dosage": "Dosage",
+    "precautions": "Precautions",
+    "effectiveness": "Effectiveness Rating",
+    "isPublic": "Make Public",
+    "isApproved": "Approved",
+    "noRemedies": "No remedies found",
+    "createFirstRemedy": "Share your first traditional remedy",
+    "approvalPending": "Pending approval",
+    "saveSuccess": "Remedy saved successfully",
+    "saveError": "Failed to save remedy"
+  },
+  "tours": {
+    "title": "Virtual Garden Tours",
+    "digestiveHealth": "Digestive Health",
+    "immunity": "Immunity Boosters",
+    "skinCare": "Skin Care",
+    "respiratory": "Respiratory Health",
+    "startTour": "Start Tour",
+    "continueTour": "Continue Tour",
+    "progress": "Progress",
+    "completed": "Completed",
+    "duration": "Duration",
+    "difficulty": "Difficulty",
+    "stops": "Stops",
+    "learningObjectives": "Learning Objectives",
+    "noTours": "No tours available",
+    "tourComplete": "Tour completed!",
+    "nextStop": "Next Stop",
+    "previousStop": "Previous Stop",
+    "stopProgress": "Stop {current} of {total}"
+  },
+  "badges": {
+    "title": "Achievements",
+    "earned": "Earned",
+    "notEarned": "Not Earned",
+    "progress": "Progress",
+    "requirements": "Requirements",
+    "points": "Points",
+    "noBadges": "No badges earned yet",
+    "exploreToEarn": "Explore the app to earn your first badge!"
   },
   "ai": {
     "askAboutHealth": "Ask about your health concerns",
     "placeholder": "e.g., I have a cough and sore throat",
     "getRecommendations": "Get Plant Recommendations",
     "recommendations": "Recommended Plants",
-    "confidence": "Confidence"
+    "confidence": "Confidence",
+    "noRecommendations": "No recommendations found",
+    "tryDifferent": "Try describing your symptoms differently"
   },
   "quiz": {
     "title": "Plant Knowledge Quiz",
@@ -52,17 +171,12 @@
     "next": "Next Question",
     "score": "Score",
     "completed": "Quiz Completed!",
-    "badges": "Badges Earned"
-  },
-  "tours": {
-    "title": "Virtual Garden Tours",
-    "digestiveHealth": "Digestive Health",
-    "immunity": "Immunity Boosters",
-    "skinCare": "Skin Care",
-    "respiratory": "Respiratory Health",
-    "startTour": "Start Tour",
-    "contineTour": "Continue Tour",
-    "progress": "Progress"
+    "badges": "Badges Earned",
+    "correct": "Correct!",
+    "incorrect": "Incorrect",
+    "finalScore": "Final Score: {score}/{total}",
+    "tryAgain": "Try Again",
+    "noQuizzes": "No quizzes available"
   },
   "auth": {
     "signInTitle": "Sign in to HerbaVerse",
@@ -71,6 +185,8 @@
     "alreadyHaveAccount": "Already have an account?",
     "dontHaveAccount": "Don't have an account?",
     "signInHere": "Sign in here",
-    "signUpHere": "Sign up here"
+    "signUpHere": "Sign up here",
+    "authRequired": "Authentication Required",
+    "signInToAccess": "Please sign in to access this feature"
   }
 }

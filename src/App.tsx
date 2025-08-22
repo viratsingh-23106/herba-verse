@@ -11,8 +11,12 @@ import Navbar from "./components/Navbar";
 import Index from "./pages/Index";
 import PlantDetail from "./pages/PlantDetail";
 import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
+import MyNotes from "./pages/MyNotes";
 import AISuggestions from "./pages/AISuggestions";
 import QuizPage from "./pages/QuizPage";
+import VirtualTours from "./pages/VirtualTours";
+import Remedies from "./pages/Remedies";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,8 +33,12 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/my-notes" element={<MyNotes />} />
               <Route path="/ai-suggestions" element={<AISuggestions />} />
               <Route path="/quiz" element={<QuizPage />} />
+              <Route path="/tours" element={<VirtualTours />} />
+              <Route path="/remedies" element={<Remedies />} />
               <Route path="/plant/:plantId" element={<PlantDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

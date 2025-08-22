@@ -16,7 +16,25 @@
     "bookmark": "बुकमार्क",
     "notes": "नोट्स",
     "profile": "प्रोफाइल",
-    "settings": "सेटिंग्स"
+    "settings": "सेटिंग्स",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "create": "बनाएं",
+    "update": "अपडेट करें",
+    "add": "जोड़ें",
+    "remove": "हटाएं",
+    "view": "देखें",
+    "close": "बंद करें",
+    "submit": "जमा करें",
+    "reset": "रीसेट करें",
+    "back": "वापस",
+    "next": "अगला",
+    "previous": "पिछला",
+    "noData": "कोई डेटा उपलब्ध नहीं",
+    "success": "सफलता",
+    "error": "त्रुटि",
+    "warning": "चेतावनी",
+    "info": "जानकारी"
   },
   "navigation": {
     "home": "होम",
@@ -25,6 +43,12 @@
     "tours": "वर्चुअल टूर",
     "remedies": "घरेलू उपचार",
     "myNotes": "मेरे नोट्स"
+  },
+  "hero": {
+    "title": "प्रकृति की उपचार शक्ति की खोज करें",
+    "subtitle": "इंटरैक्टिव 3D मॉडल और AI-संचालित सुझावों के माध्यम से औषधीय पौधों का अन्वेषण करें",
+    "exploreButton": "पौधों का अन्वेषण करें",
+    "learnMoreButton": "और जानें"
   },
   "plants": {
     "name": "पौधे का नाम",
@@ -35,14 +59,109 @@
     "preparationMethods": "तैयारी की विधि",
     "dosage": "खुराक",
     "precautions": "सावधानियां",
-    "ayurvedic": "आयुर्वेदिक गुण"
+    "ayurvedic": "आयुर्वेदिक गुण",
+    "habitat": "प्राकृतिक वास",
+    "cultivation": "खेती",
+    "references": "संदर्भ",
+    "showingResults": "{count} पौधे दिखा रहे हैं",
+    "noResults": "कोई पौधे नहीं मिले",
+    "clearFilters": "सभी फिल्टर साफ़ करें"
+  },
+  "profile": {
+    "title": "मेरी प्रोफाइल",
+    "editProfile": "प्रोफाइल संपादित करें",
+    "displayName": "प्रदर्शन नाम",
+    "username": "उपयोगकर्ता नाम",
+    "email": "ईमेल",
+    "preferredLanguage": "पसंदीदा भाषा",
+    "avatar": "प्रोफाइल तस्वीर",
+    "joinedDate": "सदस्य बने",
+    "statistics": "आपकी सांख्यिकी",
+    "bookmarkedPlants": "बुकमार्क किए गए पौधे",
+    "notesWritten": "लिखे गए नोट्स",
+    "quizzesTaken": "लिए गए क्विज़",
+    "toursCompleted": "पूरे किए गए टूर",
+    "badgesEarned": "अर्जित बैज",
+    "updateSuccess": "प्रोफाइल सफलतापूर्वक अपडेट हुई",
+    "updateError": "प्रोफाइल अपडेट करने में विफल"
+  },
+  "notes": {
+    "title": "मेरे नोट्स",
+    "createNote": "नया नोट बनाएं",
+    "editNote": "नोट संपादित करें",
+    "noteTitle": "नोट शीर्षक",
+    "noteContent": "नोट सामग्री",
+    "tags": "टैग",
+    "isPrivate": "निजी नोट",
+    "plantName": "पौधा",
+    "createdAt": "बनाया गया",
+    "updatedAt": "अपडेट किया गया",
+    "noNotes": "आपने अभी तक कोई नोट्स नहीं लिखे हैं",
+    "createFirstNote": "अपना पहला नोट बनाएं",
+    "deleteConfirm": "क्या आप वाकई इस नोट को हटाना चाहते हैं?",
+    "saveSuccess": "नोट सफलतापूर्वक सेव हुआ",
+    "saveError": "नोट सेव करने में विफल",
+    "deleteSuccess": "नोट सफलतापूर्वक हटा दिया",
+    "deleteError": "नोट हटाने में विफल"
+  },
+  "remedies": {
+    "title": "पारंपरिक उपचार",
+    "myRemedies": "मेरे उपचार",
+    "createRemedy": "उपचार साझा करें",
+    "editRemedy": "उपचार संपादित करें",
+    "remedyTitle": "उपचार शीर्षक",
+    "description": "विवरण",
+    "ingredients": "सामग्री",
+    "preparationMethod": "तैयारी की विधि",
+    "dosage": "खुराक",
+    "precautions": "सावधानियां",
+    "effectiveness": "प्रभावशीलता रेटिंग",
+    "isPublic": "सार्वजनिक करें",
+    "isApproved": "अनुमोदित",
+    "noRemedies": "कोई उपचार नहीं मिला",
+    "createFirstRemedy": "अपना पहला पारंपरिक उपचार साझा करें",
+    "approvalPending": "अनुमोदन लंबित",
+    "saveSuccess": "उपचार सफलतापूर्वक सेव हुआ",
+    "saveError": "उपचार सेव करने में विफल"
+  },
+  "tours": {
+    "title": "वर्चुअल गार्डन टूर",
+    "digestiveHealth": "पाचन स्वास्थ्य",
+    "immunity": "इम्यूनिटी बूस्टर",
+    "skinCare": "त्वचा की देखभाल",
+    "respiratory": "श्वसन स्वास्थ्य",
+    "startTour": "टूर शुरू करें",
+    "continueTour": "टूर जारी रखें",
+    "progress": "प्रगति",
+    "completed": "पूर्ण",
+    "duration": "अवधि",
+    "difficulty": "कठिनाई",
+    "stops": "स्टॉप",
+    "learningObjectives": "शिक्षण उद्देश्य",
+    "noTours": "कोई टूर उपलब्ध नहीं",
+    "tourComplete": "टूर पूरा हुआ!",
+    "nextStop": "अगला स्टॉप",
+    "previousStop": "पिछला स्टॉप",
+    "stopProgress": "स्टॉप {current} का {total}"
+  },
+  "badges": {
+    "title": "उपलब्धियां",
+    "earned": "अर्जित",
+    "notEarned": "अर्जित नहीं",
+    "progress": "प्रगति",
+    "requirements": "आवश्यकताएं",
+    "points": "अंक",
+    "noBadges": "अभी तक कोई बैज अर्जित नहीं",
+    "exploreToEarn": "अपना पहला बैज अर्जित करने के लिए ऐप का अन्वेषण करें!"
   },
   "ai": {
     "askAboutHealth": "अपनी स्वास्थ्य समस्या के बारे में पूछें",
     "placeholder": "जैसे, मुझे खांसी और गले में दर्द है",
     "getRecommendations": "पौधों की सिफारिश पाएं",
     "recommendations": "सुझाए गए पौधे",
-    "confidence": "विश्वसनीयता"
+    "confidence": "विश्वसनीयता",
+    "noRecommendations": "कोई सिफारिश नहीं मिली",
+    "tryDifferent": "अपने लक्षण अलग तरीके से बताने का प्रयास करें"
   },
   "quiz": {
     "title": "पौधों की जानकारी क्विज़",
@@ -52,17 +171,12 @@
     "next": "अगला प्रश्न",
     "score": "स्कोर",
     "completed": "क्विज़ पूरी हुई!",
-    "badges": "अर्जित बैज"
-  },
-  "tours": {
-    "title": "वर्चुअल गार्डन टूर",
-    "digestiveHealth": "पाचन स्वास्थ्य",
-    "immunity": "इम्यूनिटी बूस्टर",
-    "skinCare": "त्वचा की देखभाल",
-    "respiratory": "श्वसन स्वास्थ्य",
-    "startTour": "टूर शुरू करें",
-    "contineTour": "टूर जारी रखें",
-    "progress": "प्रगति"
+    "badges": "अर्जित बैज",
+    "correct": "सही!",
+    "incorrect": "गलत",
+    "finalScore": "अंतिम स्कोर: {score}/{total}",
+    "tryAgain": "फिर से कोशिश करें",
+    "noQuizzes": "कोई क्विज़ उपलब्ध नहीं"
   },
   "auth": {
     "signInTitle": "HerbaVerse में साइन इन करें",
@@ -71,6 +185,8 @@
     "alreadyHaveAccount": "पहले से अकाउंट है?",
     "dontHaveAccount": "अकाउंट नहीं है?",
     "signInHere": "यहां साइन इन करें",
-    "signUpHere": "यहां साइन अप करें"
+    "signUpHere": "यहां साइन अप करें",
+    "authRequired": "प्रमाणीकरण आवश्यक",
+    "signInToAccess": "इस सुविधा का उपयोग करने के लिए कृपया साइन इन करें"
   }
 }
