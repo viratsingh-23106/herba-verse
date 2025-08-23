@@ -13,6 +13,8 @@ import PlantDetail from "./pages/PlantDetail";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import MyNotes from "./pages/MyNotes";
+import Bookmarks from "./pages/Bookmarks";
+import Likes from "./pages/Likes";
 import AISuggestions from "./pages/AISuggestions";
 import QuizPage from "./pages/QuizPage";
 import VirtualTours from "./pages/VirtualTours";
@@ -35,6 +37,8 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/my-notes" element={<MyNotes />} />
+              <Route path="/bookmarks" element={<Bookmarks />} />
+              <Route path="/likes" element={<Likes />} />
               <Route path="/ai-suggestions" element={<AISuggestions />} />
               <Route path="/quiz" element={<QuizPage />} />
               <Route path="/tours" element={<VirtualTours />} />

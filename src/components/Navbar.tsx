@@ -30,7 +30,9 @@ import {
   LogOut, 
   Languages,
   Menu,
-  X
+  X,
+  Heart,
+  ThumbsUp
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
@@ -141,6 +143,14 @@ const Navbar = () => {
                   <DropdownMenuItem onClick={() => navigate('/my-notes')}>
                     <StickyNote className="mr-2 h-4 w-4" />
                     {t('navigation.myNotes')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/bookmarks')}>
+                    <Heart className="mr-2 h-4 w-4" />
+                    {t('navigation.bookmarks')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/likes')}>
+                    <ThumbsUp className="mr-2 h-4 w-4" />
+                    {t('navigation.likes')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>

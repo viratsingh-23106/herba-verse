@@ -3,8 +3,11 @@ import { OrbitControls, Environment } from '@react-three/drei';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, Share2, BookOpen, Leaf } from 'lucide-react';
+import { Heart, Share2, BookOpen, Leaf, ThumbsUp } from 'lucide-react';
 import { useState, Suspense, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 // Simple 3D Plant Model Component
 function PlantModel({ color = '#22c55e' }: { color?: string }) {
@@ -81,32 +84,154 @@ interface PlantCard3DProps {
 
 export function PlantCard3D({ plant, onBookmark, onShare, onLearnMore }: PlantCard3DProps) {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Check if plant is bookmarked on component mount
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPlants') || '[]');
-    setIsBookmarked(bookmarks.includes(plant.id));
-  }, [plant.id]);
-
-  const handleBookmark = () => {
-    const newBookmarkState = !isBookmarked;
-    setIsBookmarked(newBookmarkState);
-    
-    // Update localStorage
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPlants') || '[]');
-    if (newBookmarkState) {
-      if (!bookmarks.includes(plant.id)) {
-        bookmarks.push(plant.id);
-      }
+    if (user) {
+      checkBookmarkAndLikeStatus();
     } else {
-      const index = bookmarks.indexOf(plant.id);
-      if (index > -1) {
-        bookmarks.splice(index, 1);
-      }
+      // Fallback to localStorage for non-authenticated users
+      const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPlants') || '[]');
+      setIsBookmarked(bookmarks.includes(plant.id));
     }
-    localStorage.setItem('bookmarkedPlants', JSON.stringify(bookmarks));
+  }, [plant.id, user]);
+
+  const checkBookmarkAndLikeStatus = async () => {
+    if (!user) return;
     
-    onBookmark?.(plant.id);
+    try {
+      // Check bookmark status
+      const { data: bookmarkData } = await supabase
+        .from('user_bookmarks')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('plant_id', plant.id)
+        .single();
+      
+      setIsBookmarked(!!bookmarkData);
+
+      // Check like status
+      const { data: likeData } = await supabase
+        .from('user_likes')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('plant_id', plant.id)
+        .single();
+      
+      setIsLiked(!!likeData);
+    } catch (error) {
+      // Errors are expected when no records exist
+      console.log('Status check completed');
+    }
+  };
+
+  const handleBookmark = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to bookmark plants.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (isBookmarked) {
+        // Remove bookmark
+        await supabase
+          .from('user_bookmarks')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('plant_id', plant.id);
+        
+        setIsBookmarked(false);
+        toast({
+          title: "Bookmark Removed",
+          description: "Plant removed from bookmarks.",
+        });
+      } else {
+        // Add bookmark
+        await supabase
+          .from('user_bookmarks')
+          .insert({
+            user_id: user.id,
+            plant_id: plant.id,
+          });
+        
+        setIsBookmarked(true);
+        toast({
+          title: "Plant Bookmarked",
+          description: "Plant added to your bookmarks.",
+        });
+      }
+      
+      onBookmark?.(plant.id);
+    } catch (error) {
+      console.error('Error updating bookmark:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update bookmark. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to like plants.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (isLiked) {
+        // Remove like
+        await supabase
+          .from('user_likes')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('plant_id', plant.id);
+        
+        setIsLiked(false);
+        toast({
+          title: "Like Removed",
+          description: "Plant removed from your likes.",
+        });
+      } else {
+        // Add like
+        await supabase
+          .from('user_likes')
+          .insert({
+            user_id: user.id,
+            plant_id: plant.id,
+          });
+        
+        setIsLiked(true);
+        toast({
+          title: "Plant Liked",
+          description: "Plant added to your likes.",
+        });
+      }
+    } catch (error) {
+      console.error('Error updating like:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update like. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -145,8 +270,18 @@ export function PlantCard3D({ plant, onBookmark, onShare, onLearnMore }: PlantCa
           </Button>
           <Button
             size="sm"
+            variant={isLiked ? "default" : "secondary"}
+            onClick={handleLike}
+            disabled={loading}
+            className="opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur"
+          >
+            <ThumbsUp className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
+          </Button>
+          <Button
+            size="sm"
             variant={isBookmarked ? "default" : "secondary"}
             onClick={handleBookmark}
+            disabled={loading}
             className="opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur"
           >
             <Heart className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />

@@ -290,6 +290,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_likes: {
+        Row: {
+          created_at: string
+          id: string
+          plant_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plant_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plant_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_plant_notes: {
         Row: {
           content: string | null

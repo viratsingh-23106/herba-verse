@@ -42,7 +42,9 @@
     "quiz": "Quiz",
     "tours": "Virtual Tours",
     "remedies": "Remedies",
-    "myNotes": "My Notes"
+    "myNotes": "My Notes",
+    "bookmarks": "My Bookmarks",
+    "likes": "My Likes"
   },
   "hero": {
     "title": "Discover the Healing Power of Nature",
@@ -177,6 +179,22 @@
     "finalScore": "Final Score: {score}/{total}",
     "tryAgain": "Try Again",
     "noQuizzes": "No quizzes available"
+  },
+  "bookmarks": {
+    "description": "Your saved plants for future reference",
+    "empty": {
+      "title": "No Bookmarked Plants",
+      "description": "You haven't bookmarked any plants yet. Start exploring and bookmark your favorites!",
+      "action": "Explore Plants"
+    }
+  },
+  "likes": {
+    "description": "Plants you've liked and appreciated",
+    "empty": {
+      "title": "No Liked Plants",
+      "description": "You haven't liked any plants yet. Start exploring and show appreciation for your favorites!",
+      "action": "Explore Plants"
+    }
   },
   "auth": {
     "signInTitle": "Sign in to HerbaVerse",
