@@ -3,7 +3,7 @@ import { OrbitControls, Environment } from '@react-three/drei';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, Share2, BookOpen, Leaf, ThumbsUp } from 'lucide-react';
+import { Heart, Share2, BookOpen, Leaf, ThumbsUp, Bookmark } from 'lucide-react';
 import { useState, Suspense, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -258,13 +258,13 @@ export function PlantCard3D({ plant, onBookmark, onShare, onLearnMore }: PlantCa
           </Suspense>
         </Canvas>
         
-        {/* Overlay actions */}
+        {/* Overlay actions - Always visible */}
         <div className="absolute top-4 right-4 flex gap-2">
           <Button
             size="sm"
             variant="secondary"
             onClick={() => onShare?.(plant.id)}
-            className="opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur"
+            className="bg-background/90 backdrop-blur hover:bg-background shadow-lg"
           >
             <Share2 className="w-4 h-4" />
           </Button>
@@ -273,18 +273,26 @@ export function PlantCard3D({ plant, onBookmark, onShare, onLearnMore }: PlantCa
             variant={isLiked ? "default" : "secondary"}
             onClick={handleLike}
             disabled={loading}
-            className="opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur"
+            className={`backdrop-blur shadow-lg ${
+              isLiked 
+                ? 'bg-red-500 hover:bg-red-600 text-white' 
+                : 'bg-background/90 hover:bg-background'
+            }`}
           >
-            <ThumbsUp className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
+            <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
           </Button>
           <Button
             size="sm"
             variant={isBookmarked ? "default" : "secondary"}
             onClick={handleBookmark}
             disabled={loading}
-            className="opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur"
+            className={`backdrop-blur shadow-lg ${
+              isBookmarked 
+                ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                : 'bg-background/90 hover:bg-background'
+            }`}
           >
-            <Heart className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
+            <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
           </Button>
         </div>
         

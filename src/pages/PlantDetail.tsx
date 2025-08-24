@@ -17,9 +17,12 @@ import {
   Beaker, 
   Shield, 
   ExternalLink,
-  Camera
+  Camera,
+  Bookmark
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const PlantDetail = () => {
   const { plantId } = useParams<{ plantId: string }>();
@@ -27,20 +30,51 @@ const PlantDetail = () => {
   const { toast } = useToast();
   
   const [isLiked, setIsLiked] = useState(false);
-  const [likes, setLikes] = useState(0);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   
   // Find the plant data
   const allPlants = [...plantsData, ...additionalPlants];
   const plant = allPlants.find(p => p.id === plantId);
   
   useEffect(() => {
-    // Load liked state from localStorage
-    const likedPlants = JSON.parse(localStorage.getItem('likedPlants') || '{}');
-    const plantLikes = parseInt(localStorage.getItem(`likes_${plantId}`) || '0');
-    
-    setIsLiked(likedPlants[plantId] || false);
-    setLikes(plantLikes);
-  }, [plantId]);
+    if (user && plantId) {
+      checkLikeAndBookmarkStatus();
+    } else {
+      // Fallback to localStorage for non-authenticated users
+      const likedPlants = JSON.parse(localStorage.getItem('likedPlants') || '{}');
+      const bookmarkedPlants = JSON.parse(localStorage.getItem('bookmarkedPlants') || '{}');
+      setIsLiked(likedPlants[plantId] || false);
+      setIsBookmarked(bookmarkedPlants[plantId] || false);
+    }
+  }, [user, plantId]);
+
+  const checkLikeAndBookmarkStatus = async () => {
+    if (!user || !plantId) return;
+
+    try {
+      const [likeResult, bookmarkResult] = await Promise.all([
+        supabase
+          .from('user_likes')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('plant_id', plantId)
+          .single(),
+        supabase
+          .from('user_bookmarks')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('plant_id', plantId)
+          .single()
+      ]);
+
+      setIsLiked(!!likeResult.data);
+      setIsBookmarked(!!bookmarkResult.data);
+    } catch (error) {
+      // Errors are expected when no records exist
+    }
+  };
   
   if (!plant) {
     return (
@@ -58,23 +92,112 @@ const PlantDetail = () => {
     );
   }
   
-  const handleLike = () => {
-    const newLikedState = !isLiked;
-    const newLikes = newLikedState ? likes + 1 : Math.max(0, likes - 1);
-    
-    setIsLiked(newLikedState);
-    setLikes(newLikes);
-    
-    // Save to localStorage
-    const likedPlants = JSON.parse(localStorage.getItem('likedPlants') || '{}');
-    likedPlants[plant.id] = newLikedState;
-    localStorage.setItem('likedPlants', JSON.stringify(likedPlants));
-    localStorage.setItem(`likes_${plant.id}`, newLikes.toString());
-    
-    toast({
-      title: newLikedState ? "Plant liked!" : "Like removed",
-      description: newLikedState ? "Added to your favorites" : "Removed from favorites",
-    });
+  const handleLike = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to like plants",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (loading || !plantId) return;
+    setLoading(true);
+
+    try {
+      if (isLiked) {
+        // Remove like
+        await supabase
+          .from('user_likes')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('plant_id', plantId);
+        
+        setIsLiked(false);
+        toast({
+          title: "Like removed",
+          description: "Removed from your favorites",
+        });
+      } else {
+        // Add like
+        await supabase
+          .from('user_likes')
+          .insert({
+            user_id: user.id,
+            plant_id: plantId,
+          });
+        
+        setIsLiked(true);
+        toast({
+          title: "Plant liked!",
+          description: "Added to your favorites",
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update like status",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBookmark = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to bookmark plants",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (loading || !plantId) return;
+    setLoading(true);
+
+    try {
+      if (isBookmarked) {
+        // Remove bookmark
+        await supabase
+          .from('user_bookmarks')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('plant_id', plantId);
+        
+        setIsBookmarked(false);
+        toast({
+          title: "Bookmark removed",
+          description: "Removed from your bookmarks",
+        });
+      } else {
+        // Add bookmark
+        await supabase
+          .from('user_bookmarks')
+          .insert({
+            user_id: user.id,
+            plant_id: plantId,
+          });
+        
+        setIsBookmarked(true);
+        toast({
+          title: "Plant bookmarked!",
+          description: "Added to your bookmarks",
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update bookmark status",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
   
   const handleShare = async () => {
@@ -125,13 +248,24 @@ const PlantDetail = () => {
               </Button>
               
               <Button
+                onClick={handleBookmark}
+                variant={isBookmarked ? "default" : "outline"}
+                size="sm"
+                className={isBookmarked ? "bg-blue-500 hover:bg-blue-600 text-white" : ""}
+                disabled={loading}
+              >
+                <Bookmark className={`w-4 h-4 mr-2 ${isBookmarked ? 'fill-current' : ''}`} />
+                Bookmark
+              </Button>
+              
+              <Button
                 onClick={handleLike}
                 variant={isLiked ? "default" : "outline"}
                 size="sm"
-                className={isLiked ? "bg-gradient-botanical text-primary-foreground" : ""}
+                className={isLiked ? "bg-red-500 hover:bg-red-600 text-white" : ""}
+                disabled={loading}
               >
                 <Heart className={`w-4 h-4 mr-2 ${isLiked ? 'fill-current' : ''}`} />
-                {likes > 0 && <span className="mr-1">{likes}</span>}
                 Like
               </Button>
             </div>
