@@ -223,7 +223,7 @@ const PlantDetail = () => {
   };
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-16">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
         <div className="container mx-auto px-4 py-4">
@@ -237,7 +237,7 @@ const PlantDetail = () => {
               Back to Garden
             </Button>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 relative z-[60]">
               <Button
                 onClick={handleShare}
                 variant="outline"

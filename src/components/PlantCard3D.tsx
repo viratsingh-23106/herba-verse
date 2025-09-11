@@ -259,7 +259,7 @@ export function PlantCard3D({ plant, onBookmark, onShare, onLearnMore }: PlantCa
         </Canvas>
         
         {/* Overlay actions - Always visible */}
-        <div className="absolute top-4 right-4 flex gap-2">
+        <div className="absolute top-4 right-4 flex gap-2 z-[60]">
           <Button
             size="sm"
             variant="secondary"
