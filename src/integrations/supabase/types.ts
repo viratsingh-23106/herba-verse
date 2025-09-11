@@ -121,6 +121,108 @@ export type Database = {
           },
         ]
       }
+      plants: {
+        Row: {
+          ayurvedic_properties: Json | null
+          color: string | null
+          created_at: string | null
+          cultivation_en: string | null
+          cultivation_hi: string | null
+          description_en: string | null
+          description_hi: string | null
+          dosage_en: string | null
+          dosage_hi: string | null
+          glb_url: string | null
+          habitat_en: string | null
+          habitat_hi: string | null
+          id: string
+          image_url: string | null
+          medicinal_parts_en: string[] | null
+          medicinal_parts_hi: string[] | null
+          name_en: string
+          name_hi: string | null
+          precautions_en: string | null
+          precautions_hi: string | null
+          preparation_methods_en: string[] | null
+          preparation_methods_hi: string[] | null
+          real_images: string[] | null
+          research_references: string[] | null
+          scientific_name: string | null
+          updated_at: string | null
+          uses_en: string[] | null
+          uses_hi: string[] | null
+          vr_position: Json | null
+          vr_rotation: Json | null
+          vr_scale: Json | null
+        }
+        Insert: {
+          ayurvedic_properties?: Json | null
+          color?: string | null
+          created_at?: string | null
+          cultivation_en?: string | null
+          cultivation_hi?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          dosage_en?: string | null
+          dosage_hi?: string | null
+          glb_url?: string | null
+          habitat_en?: string | null
+          habitat_hi?: string | null
+          id: string
+          image_url?: string | null
+          medicinal_parts_en?: string[] | null
+          medicinal_parts_hi?: string[] | null
+          name_en: string
+          name_hi?: string | null
+          precautions_en?: string | null
+          precautions_hi?: string | null
+          preparation_methods_en?: string[] | null
+          preparation_methods_hi?: string[] | null
+          real_images?: string[] | null
+          research_references?: string[] | null
+          scientific_name?: string | null
+          updated_at?: string | null
+          uses_en?: string[] | null
+          uses_hi?: string[] | null
+          vr_position?: Json | null
+          vr_rotation?: Json | null
+          vr_scale?: Json | null
+        }
+        Update: {
+          ayurvedic_properties?: Json | null
+          color?: string | null
+          created_at?: string | null
+          cultivation_en?: string | null
+          cultivation_hi?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          dosage_en?: string | null
+          dosage_hi?: string | null
+          glb_url?: string | null
+          habitat_en?: string | null
+          habitat_hi?: string | null
+          id?: string
+          image_url?: string | null
+          medicinal_parts_en?: string[] | null
+          medicinal_parts_hi?: string[] | null
+          name_en?: string
+          name_hi?: string | null
+          precautions_en?: string | null
+          precautions_hi?: string | null
+          preparation_methods_en?: string[] | null
+          preparation_methods_hi?: string[] | null
+          real_images?: string[] | null
+          research_references?: string[] | null
+          scientific_name?: string | null
+          updated_at?: string | null
+          uses_en?: string[] | null
+          uses_hi?: string[] | null
+          vr_position?: Json | null
+          vr_rotation?: Json | null
+          vr_scale?: Json | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -233,6 +335,63 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "tour_stops_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "virtual_tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_waypoints: {
+        Row: {
+          created_at: string | null
+          description_en: string | null
+          description_hi: string | null
+          id: string
+          order_index: number
+          plant_id: string | null
+          position: Json
+          rotation: Json | null
+          title_en: string | null
+          title_hi: string | null
+          tour_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          id?: string
+          order_index: number
+          plant_id?: string | null
+          position: Json
+          rotation?: Json | null
+          title_en?: string | null
+          title_hi?: string | null
+          tour_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          id?: string
+          order_index?: number
+          plant_id?: string | null
+          position?: Json
+          rotation?: Json | null
+          title_en?: string | null
+          title_hi?: string | null
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_waypoints_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tour_waypoints_tour_id_fkey"
             columns: ["tour_id"]
             isOneToOne: false
             referencedRelation: "virtual_tours"
@@ -490,12 +649,15 @@ export type Database = {
           description_en: string | null
           description_hi: string | null
           difficulty_level: number | null
+          environment_settings: Json | null
           estimated_duration: number | null
           id: string
           is_active: boolean | null
+          starting_position: Json | null
           theme: string
           title_en: string
           title_hi: string | null
+          vr_enabled: boolean | null
         }
         Insert: {
           cover_image_url?: string | null
@@ -503,12 +665,15 @@ export type Database = {
           description_en?: string | null
           description_hi?: string | null
           difficulty_level?: number | null
+          environment_settings?: Json | null
           estimated_duration?: number | null
           id?: string
           is_active?: boolean | null
+          starting_position?: Json | null
           theme: string
           title_en: string
           title_hi?: string | null
+          vr_enabled?: boolean | null
         }
         Update: {
           cover_image_url?: string | null
@@ -516,12 +681,15 @@ export type Database = {
           description_en?: string | null
           description_hi?: string | null
           difficulty_level?: number | null
+          environment_settings?: Json | null
           estimated_duration?: number | null
           id?: string
           is_active?: boolean | null
+          starting_position?: Json | null
           theme?: string
           title_en?: string
           title_hi?: string | null
+          vr_enabled?: boolean | null
         }
         Relationships: []
       }
