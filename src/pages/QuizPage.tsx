@@ -136,7 +136,7 @@ const QuizPage = () => {
     const percentage = Math.round((finalScore / QUIZ_DATA.questions.length) * 100);
     
     return (
-      <div className="min-h-screen bg-gradient-subtle pt-20 pb-16">
+      <div className="min-h-screen bg-gradient-subtle pt-16 pb-16">
         <div className="container mx-auto px-4 max-w-2xl">
           <Card className="shadow-botanical">
             <CardHeader className="text-center">
@@ -227,7 +227,7 @@ const QuizPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-subtle pt-20 pb-16">
+    <div className="min-h-screen bg-gradient-subtle pt-16 pb-16">
       <div className="container mx-auto px-4 max-w-3xl">
         {/* Quiz Header */}
         <div className="mb-8">
