@@ -37,10 +37,12 @@ export const VRGarden: React.FC = () => {
   
   const [plants, setPlants] = useState<Plant[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showNonVRMode, setShowNonVRMode] = useState(false);
+  const [showNonVRMode, setShowNonVRMode] = useState(true); // Default to true for debugging
+  const [error, setError] = useState<string | null>(null);
 
   // Load plants from Supabase
   useEffect(() => {
+    console.log('VRGarden: Starting to load plants...');
     const loadPlants = async () => {
       try {
         const { data, error } = await supabase
@@ -48,7 +50,13 @@ export const VRGarden: React.FC = () => {
           .select('*')
           .order('name_en');
 
-        if (error) throw error;
+        if (error) {
+          console.error('VRGarden: Error loading plants:', error);
+          setError(`Failed to load plants: ${error.message}`);
+          return;
+        }
+        
+        console.log('VRGarden: Loaded plants:', data);
         
         // Transform data to match Plant interface
         const transformedPlants = (data || []).map(plant => ({
@@ -60,16 +68,21 @@ export const VRGarden: React.FC = () => {
         
         setPlants(transformedPlants);
       } catch (error) {
-        console.error('Failed to load plants:', error);
+        console.error('VRGarden: Failed to load plants:', error);
+        setError(`Failed to load plants: ${error}`);
       } finally {
         setLoading(false);
+        console.log('VRGarden: Loading complete');
       }
     };
 
     loadPlants();
   }, []);
 
+  console.log('VRGarden: Rendering with', { loading, plantsCount: plants.length, capabilities, showNonVRMode, error });
+
   if (loading) {
+    console.log('VRGarden: Still loading...');
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
@@ -80,62 +93,110 @@ export const VRGarden: React.FC = () => {
     );
   }
 
-  const VRScene = () => (
-    <Suspense fallback={null}>
-      <Environment preset="forest" background />
-      <Sky 
-        distance={450000} 
-        sunPosition={[0, 1, 0]} 
-        inclination={0} 
-        azimuth={0.25} 
-      />
-      
-      <ambientLight intensity={0.4} />
-      <directionalLight 
-        position={[10, 10, 5]} 
-        intensity={1} 
-        castShadow 
-        shadow-mapSize-width={2048} 
-        shadow-mapSize-height={2048} 
-      />
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center max-w-md px-6">
+          <h2 className="text-2xl font-bold mb-4 text-red-600">Error Loading VR Garden</h2>
+          <p className="text-muted-foreground mb-6">{error}</p>
+          <Button onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
-      <Physics>
-        <VREnvironment />
-        
-        {/* Plant models positioned in VR space */}
-        {plants.map((plant) => (
-          <VRPlantModel
-            key={plant.id}
-            plant={plant}
-            position={plant.vr_position || { x: 0, y: 0, z: 0 }}
-            scale={plant.vr_scale || { x: 1, y: 1, z: 1 }}
-            rotation={plant.vr_rotation || { x: 0, y: 0, z: 0 }}
-            isHovered={hoveredObject?.userData?.plantId === plant.id}
+  const VRScene = () => {
+    console.log('VRGarden: Rendering VRScene with', plants.length, 'plants');
+    try {
+      return (
+        <Suspense fallback={null}>
+          <Environment preset="forest" background />
+          <Sky 
+            distance={450000} 
+            sunPosition={[0, 1, 0]} 
+            inclination={0} 
+            azimuth={0.25} 
           />
-        ))}
+          
+          <ambientLight intensity={0.4} />
+          <directionalLight 
+            position={[10, 10, 5]} 
+            intensity={1} 
+            castShadow 
+            shadow-mapSize-width={2048} 
+            shadow-mapSize-height={2048} 
+          />
 
-        <VRTeleportation />
-        <VRControllers />
-      </Physics>
+          <Physics>
+            <VREnvironment />
+            
+            {/* Plant models positioned in VR space */}
+            {plants.map((plant) => (
+              <VRPlantModel
+                key={plant.id}
+                plant={plant}
+                position={plant.vr_position || { x: 0, y: 0, z: 0 }}
+                scale={plant.vr_scale || { x: 1, y: 1, z: 1 }}
+                rotation={plant.vr_rotation || { x: 0, y: 0, z: 0 }}
+                isHovered={hoveredObject?.userData?.plantId === plant.id}
+              />
+            ))}
 
-      {/* VR UI Components */}
-      {selectedObject && (
-        <VRInfoCard
-          plant={plants.find(p => p.id === selectedObject.userData?.plantId)}
-          position={[0, 2, -1]}
-          onClose={clearSelection}
-        />
-      )}
+            <VRTeleportation />
+            <VRControllers />
+          </Physics>
 
-      <VRTourGuide />
+          {/* VR UI Components */}
+          {selectedObject && (
+            <VRInfoCard
+              plant={plants.find(p => p.id === selectedObject.userData?.plantId)}
+              position={[0, 2, -1]}
+              onClose={clearSelection}
+            />
+          )}
 
-      {/* Desktop controls when not in VR */}
-      {!isVRActive && <OrbitControls enablePan enableZoom enableRotate />}
-    </Suspense>
+          <VRTourGuide />
+
+          {/* Desktop controls when not in VR */}
+          {!isVRActive && <OrbitControls enablePan enableZoom enableRotate />}
+        </Suspense>
+      );
+    } catch (error) {
+      console.error('VRGarden: Error in VRScene:', error);
+      return null;
+    }
+  };
+
+  // Add fallback rendering for debugging
+  const renderFallback = () => (
+    <div className="h-screen bg-gradient-to-b from-green-100 to-green-200 dark:from-green-900 dark:to-green-800 flex items-center justify-center">
+      <div className="text-center max-w-md px-6">
+        <h2 className="text-2xl font-bold mb-4">VR Garden Debug Mode</h2>
+        <p className="text-muted-foreground mb-4">
+          Plants loaded: {plants.length}
+        </p>
+        <p className="text-muted-foreground mb-4">
+          WebXR supported: {capabilities.isSupported ? 'Yes' : 'No'}
+        </p>
+        <p className="text-muted-foreground mb-6">
+          VR supported: {capabilities.isVRSupported ? 'Yes' : 'No'}
+        </p>
+        <Button onClick={() => setShowNonVRMode(true)} size="lg">
+          Enable 3D View
+        </Button>
+      </div>
+    </div>
   );
 
   return (
     <div className="h-screen relative">
+      {/* Debug info */}
+      <div className="absolute top-4 right-4 z-50 bg-black/80 text-white p-2 rounded text-xs">
+        Plants: {plants.length} | WebXR: {capabilities.isSupported ? 'Y' : 'N'} | 3D: {showNonVRMode ? 'Y' : 'N'}
+      </div>
+
       {/* VR/AR Entry UI */}
       <div className="absolute top-4 left-4 z-10 flex gap-4">
         {capabilities.isSupported ? (
@@ -190,7 +251,7 @@ export const VRGarden: React.FC = () => {
 
       {/* Error Display */}
       {vrError && (
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-16 right-4 z-10">
           <Alert variant="destructive" className="w-auto">
             <AlertDescription>{vrError}</AlertDescription>
           </Alert>
@@ -198,31 +259,20 @@ export const VRGarden: React.FC = () => {
       )}
 
       {/* 3D Canvas */}
-      {(capabilities.isSupported || showNonVRMode) && (
+      {showNonVRMode ? (
         <Canvas
           shadows
           camera={{ position: [0, 1.6, 5], fov: 75 }}
           style={{ background: '#87CEEB' }}
+          onCreated={() => console.log('VRGarden: Canvas created successfully')}
+          onError={(error) => console.error('VRGarden: Canvas error:', error)}
         >
           <XR store={store}>
             <VRScene />
           </XR>
         </Canvas>
-      )}
-
-      {/* Fallback for unsupported devices */}
-      {!capabilities.isSupported && !showNonVRMode && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-green-100 to-green-200 dark:from-green-900 dark:to-green-800">
-          <div className="text-center max-w-md px-6">
-            <h2 className="text-2xl font-bold mb-4">VR Garden Experience</h2>
-            <p className="text-muted-foreground mb-6">
-              For the best experience, please use a VR-capable browser on a device with WebXR support (like Oculus Quest or desktop with VR headset).
-            </p>
-            <Button onClick={() => setShowNonVRMode(true)} size="lg">
-              View Desktop Version
-            </Button>
-          </div>
-        </div>
+      ) : (
+        renderFallback()
       )}
     </div>
   );

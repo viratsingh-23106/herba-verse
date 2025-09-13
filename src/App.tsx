@@ -20,6 +20,7 @@ import QuizPage from "./pages/QuizPage";
 import VirtualTours from "./pages/VirtualTours";
 import Remedies from "./pages/Remedies";
 import { VRGardenPage } from "./pages/VRGardenPage";
+import TourDetail from "./pages/TourDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/ai-suggestions" element={<AISuggestions />} />
               <Route path="/quiz" element={<QuizPage />} />
               <Route path="/tours" element={<VirtualTours />} />
+              <Route path="/tours/:tourId" element={<TourDetail />} />
               <Route path="/remedies" element={<Remedies />} />
               <Route path="/vr-garden" element={<VRGardenPage />} />
               <Route path="/plant/:plantId" element={<PlantDetail />} />
