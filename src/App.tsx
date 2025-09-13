@@ -19,6 +19,7 @@ import AISuggestions from "./pages/AISuggestions";
 import QuizPage from "./pages/QuizPage";
 import VirtualTours from "./pages/VirtualTours";
 import Remedies from "./pages/Remedies";
+import { VRGardenPage } from "./pages/VRGardenPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/quiz" element={<QuizPage />} />
               <Route path="/tours" element={<VirtualTours />} />
               <Route path="/remedies" element={<Remedies />} />
+              <Route path="/vr-garden" element={<VRGardenPage />} />
               <Route path="/plant/:plantId" element={<PlantDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

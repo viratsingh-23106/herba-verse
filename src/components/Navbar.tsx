@@ -32,7 +32,8 @@ import {
   Menu,
   X,
   Heart,
-  ThumbsUp
+  ThumbsUp,
+  Glasses
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
@@ -48,6 +49,7 @@ const Navbar = () => {
     { path: '/ai-suggestions', label: t('navigation.aiSuggestions'), icon: Sparkles },
     { path: '/quiz', label: t('navigation.quiz'), icon: Trophy },
     { path: '/tours', label: t('navigation.tours'), icon: Map },
+    { path: '/vr-garden', label: t('navigation.vrGarden'), icon: Glasses },
     { path: '/remedies', label: t('navigation.remedies'), icon: BookHeart },
   ];
 
