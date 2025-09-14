@@ -342,6 +342,78 @@ export type Database = {
           },
         ]
       }
+      tour_videos: {
+        Row: {
+          created_at: string | null
+          description_en: string | null
+          description_hi: string | null
+          duration: number | null
+          id: string
+          is_360: boolean | null
+          is_active: boolean | null
+          is_vr_compatible: boolean | null
+          plant_id: string | null
+          thumbnail_url: string | null
+          title_en: string
+          title_hi: string | null
+          tour_id: string | null
+          updated_at: string | null
+          video_type: string | null
+          video_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          duration?: number | null
+          id?: string
+          is_360?: boolean | null
+          is_active?: boolean | null
+          is_vr_compatible?: boolean | null
+          plant_id?: string | null
+          thumbnail_url?: string | null
+          title_en: string
+          title_hi?: string | null
+          tour_id?: string | null
+          updated_at?: string | null
+          video_type?: string | null
+          video_url: string
+        }
+        Update: {
+          created_at?: string | null
+          description_en?: string | null
+          description_hi?: string | null
+          duration?: number | null
+          id?: string
+          is_360?: boolean | null
+          is_active?: boolean | null
+          is_vr_compatible?: boolean | null
+          plant_id?: string | null
+          thumbnail_url?: string | null
+          title_en?: string
+          title_hi?: string | null
+          tour_id?: string | null
+          updated_at?: string | null
+          video_type?: string | null
+          video_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_videos_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tour_videos_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "virtual_tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tour_waypoints: {
         Row: {
           created_at: string | null
@@ -638,6 +710,72 @@ export type Database = {
             columns: ["tour_id"]
             isOneToOne: false
             referencedRelation: "virtual_tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_hotspots: {
+        Row: {
+          content_en: string | null
+          content_hi: string | null
+          created_at: string | null
+          hotspot_type: string | null
+          id: string
+          is_active: boolean | null
+          position_x: number | null
+          position_y: number | null
+          position_z: number | null
+          target_plant_id: string | null
+          timestamp_seconds: number
+          title_en: string
+          title_hi: string | null
+          video_id: string | null
+        }
+        Insert: {
+          content_en?: string | null
+          content_hi?: string | null
+          created_at?: string | null
+          hotspot_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          position_x?: number | null
+          position_y?: number | null
+          position_z?: number | null
+          target_plant_id?: string | null
+          timestamp_seconds: number
+          title_en: string
+          title_hi?: string | null
+          video_id?: string | null
+        }
+        Update: {
+          content_en?: string | null
+          content_hi?: string | null
+          created_at?: string | null
+          hotspot_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          position_x?: number | null
+          position_y?: number | null
+          position_z?: number | null
+          target_plant_id?: string | null
+          timestamp_seconds?: number
+          title_en?: string
+          title_hi?: string | null
+          video_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_hotspots_target_plant_id_fkey"
+            columns: ["target_plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "video_hotspots_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "tour_videos"
             referencedColumns: ["id"]
           },
         ]

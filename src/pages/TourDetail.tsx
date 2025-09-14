@@ -8,6 +8,17 @@ import { Loader2, ArrowLeft, Play, Clock, Trophy, Map } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
 
+interface TourVideo {
+  id: string;
+  title_en: string;
+  title_hi?: string;
+  description_en?: string;
+  description_hi?: string;
+  video_url: string;
+  duration?: number;
+  thumbnail_url?: string;
+}
+
 interface TourWaypoint {
   id: string;
   plant_id: string;
@@ -42,6 +53,7 @@ const TourDetail: React.FC = () => {
   
   const [tour, setTour] = useState<VirtualTour | null>(null);
   const [waypoints, setWaypoints] = useState<TourWaypoint[]>([]);
+  const [videos, setVideos] = useState<TourVideo[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,8 +80,19 @@ const TourDetail: React.FC = () => {
 
         if (waypointsError) throw waypointsError;
 
+        // Load videos for this tour
+        const { data: videosData, error: videosError } = await supabase
+          .from('tour_videos')
+          .select('*')
+          .eq('tour_id', tourId)
+          .eq('is_active', true)
+          .order('created_at');
+
+        if (videosError) throw videosError;
+
         setTour(tourData);
         setWaypoints(waypointsData || []);
+        setVideos(videosData || []);
       } catch (error) {
         console.error('Error loading tour:', error);
         toast.error('Failed to load tour details');
@@ -176,8 +199,28 @@ const TourDetail: React.FC = () => {
                 className="w-full bg-gradient-garden hover:opacity-90"
               >
                 <Play className="w-5 h-5 mr-2" />
-                Start VR Tour
+                {videos.length > 0 ? 'Start VR Experience' : 'Start VR Tour'}
               </Button>
+              
+              {videos.length > 0 && (
+                <div className="mt-4 p-3 bg-primary/10 rounded-lg">
+                  <p className="text-sm font-medium text-primary mb-2">
+                    360° Videos Available ({videos.length})
+                  </p>
+                  <div className="space-y-1 text-xs text-muted-foreground">
+                    {videos.map((video) => (
+                      <div key={video.id} className="flex justify-between">
+                        <span>
+                          {language === 'hi' ? video.title_hi || video.title_en : video.title_en}
+                        </span>
+                        {video.duration && (
+                          <span>{Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
