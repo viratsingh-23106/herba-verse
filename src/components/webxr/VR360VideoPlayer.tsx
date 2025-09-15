@@ -64,22 +64,8 @@ export const VR360VideoPlayer: React.FC<VR360VideoPlayerProps> = ({
       }
     };
 
-    // Handle YouTube and other video URLs
-    const processVideoUrl = (url: string) => {
-      // Convert YouTube URLs to embed format
-      if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) {
-        const videoId = url.includes('youtu.be/') 
-          ? url.split('youtu.be/')[1].split('?')[0]
-          : url.split('v=')[1]?.split('&')[0];
-        if (videoId) {
-          return `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=0&loop=1&playlist=${videoId}`;
-        }
-      }
-      return url;
-    };
-
-    // Set the processed video URL
-    video.src = processVideoUrl(videoUrl);
+    // Set the video URL directly (no YouTube processing for now)
+    video.src = videoUrl;
 
     const handleLoadedMetadata = () => {
       setDuration(video.duration);

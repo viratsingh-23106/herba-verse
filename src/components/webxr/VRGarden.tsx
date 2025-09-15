@@ -10,6 +10,7 @@ import { VRTeleportation } from './VRTeleportation';
 import { VRTourGuide } from './VRTourGuide';
 import { VRControllers } from './VRControllers';
 import { VR360VideoPlayer } from './VR360VideoPlayer';
+import { VRFallbackGarden } from './VRFallbackGarden';
 import { useWebXR } from '@/hooks/useWebXR';
 import { useVRInteraction } from '@/hooks/useVRInteraction';
 import { useVRTour } from '@/hooks/useVRTour';
@@ -45,7 +46,7 @@ export const VRGarden: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showDebug, setShowDebug] = useState(false);
-  const [viewMode, setViewMode] = useState<'video' | '3d'>('video');
+  const [viewMode, setViewMode] = useState<'video' | '3d'>('3d');
 
   // Load plants from Supabase
   useEffect(() => {
@@ -90,10 +91,10 @@ export const VRGarden: React.FC = () => {
     );
   }
 
-  // Auto-switch to 3D mode if no video available
   useEffect(() => {
-    if (!videoLoading && !currentVideo && viewMode === 'video') {
-      setViewMode('3d');
+    // Auto-switch to video mode if available and user hasn't manually switched
+    if (!videoLoading && currentVideo && viewMode === '3d') {
+      console.log('Video available, you can switch to video mode');
     }
   }, [currentVideo, videoLoading, viewMode]);
 
@@ -133,15 +134,19 @@ export const VRGarden: React.FC = () => {
             <Physics gravity={[0, -9.81, 0]}>
               <VREnvironment />
               
-              {plants.map((plant) => (
-                <VRPlantModel
-                  key={plant.id}
-                  plant={plant}
-                  position={plant.vr_position}
-                  scale={plant.vr_scale}
-                  rotation={plant.vr_rotation}
-                />
-              ))}
+              {plants.length > 0 ? (
+                plants.map((plant) => (
+                  <VRPlantModel
+                    key={plant.id}
+                    plant={plant}
+                    position={plant.vr_position}
+                    scale={plant.vr_scale}
+                    rotation={plant.vr_rotation}
+                  />
+                ))
+              ) : (
+                <VRFallbackGarden />
+              )}
               
               {session && <VRTeleportation />}
               <VRControllers />
@@ -187,6 +192,15 @@ export const VRGarden: React.FC = () => {
       {/* Mode Toggle */}
       <div className="absolute top-4 right-4 z-20 flex gap-2">
         <Button
+          variant={viewMode === '3d' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('3d')}
+          className="bg-white/20 border-white/40 text-white hover:bg-white/30"
+        >
+          <Eye className="w-4 h-4 mr-1" />
+          3D Garden
+        </Button>
+        <Button
           variant={viewMode === 'video' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setViewMode('video')}
@@ -195,15 +209,6 @@ export const VRGarden: React.FC = () => {
         >
           <Video className="w-4 h-4 mr-1" />
           360° Video
-        </Button>
-        <Button
-          variant={viewMode === '3d' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setViewMode('3d')}
-          className="bg-white/20 border-white/40 text-white hover:bg-white/30"
-        >
-          <Eye className="w-4 h-4 mr-1" />
-          3D Garden
         </Button>
       </div>
 
