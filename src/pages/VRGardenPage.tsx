@@ -43,24 +43,24 @@ export const VRGardenPage: React.FC = () => {
       {/* Bottom overlay with instructions */}
       <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/50 to-transparent p-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
-            <div className="text-center">
-              <h3 className="font-semibold mb-2">VR Controls</h3>
-              <p className="text-sm opacity-80">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-white text-center">
+            <div className="bg-black/30 rounded-lg p-3 backdrop-blur-sm">
+              <h3 className="font-semibold mb-1 text-green-300">🎮 VR Controls</h3>
+              <p className="text-xs opacity-90">
                 Point controllers at plants and pull trigger to interact
               </p>
             </div>
             
-            <div className="text-center">
-              <h3 className="font-semibold mb-2">Teleportation</h3>
-              <p className="text-sm opacity-80">
+            <div className="bg-black/30 rounded-lg p-3 backdrop-blur-sm">
+              <h3 className="font-semibold mb-1 text-blue-300">🌿 Virtual Garden</h3>
+              <p className="text-xs opacity-90">
                 Press thumbstick or secondary button to teleport
               </p>
             </div>
             
-            <div className="text-center">
-              <h3 className="font-semibold mb-2">Plant Information</h3>
-              <p className="text-sm opacity-80">
+            <div className="bg-black/30 rounded-lg p-3 backdrop-blur-sm">
+              <h3 className="font-semibold mb-1 text-yellow-300">📋 Plant Information</h3>
+              <p className="text-xs opacity-90">
                 Select plants to view detailed medicinal information
               </p>
             </div>

@@ -23,6 +23,10 @@ export const VRGarden: React.FC = () => {
   const [plants, setPlants] = useState<Plant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showVideo, setShowVideo] = useState(false);
+  
+  // YouTube video ID extracted from the provided URL
+  const youtubeVideoId = 'pwymX2LxnQs';
 
   // Load plants from Supabase
   useEffect(() => {
@@ -127,6 +131,38 @@ export const VRGarden: React.FC = () => {
 
   return (
     <div className="relative w-full h-screen bg-gradient-to-b from-green-900 to-green-600">
+      {/* Video Control Button */}
+      <div className="absolute top-4 right-4 z-20">
+        <Button
+          onClick={() => setShowVideo(!showVideo)}
+          className="bg-red-600 hover:bg-red-700 text-white"
+        >
+          <Video className="w-4 h-4 mr-2" />
+          {showVideo ? 'Hide Video' : 'Watch VR Tour'}
+        </Button>
+      </div>
+
+      {/* YouTube Video Overlay */}
+      {showVideo && (
+        <div className="absolute inset-0 z-30 bg-black/80 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-4xl aspect-video bg-black rounded-lg overflow-hidden">
+            <button
+              onClick={() => setShowVideo(false)}
+              className="absolute top-2 right-2 z-40 bg-red-600 hover:bg-red-700 text-white rounded-full w-8 h-8 flex items-center justify-center"
+            >
+              ✕
+            </button>
+            <iframe
+              src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0`}
+              title="VR Garden Tour Video"
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
+
       {/* Simple Status Display */}
       <div className="absolute top-4 left-4 z-20 bg-black/80 text-white p-4 rounded-lg">
         <h3 className="font-bold mb-2">Simple VR Garden</h3>
