@@ -77,40 +77,25 @@ export const VRGarden: React.FC = () => {
     loadPlants();
   }, []);
 
-  // Loading state
-  if (loading || videoLoading) {
+  // Only show loading for plants, not videos
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-b from-green-900 to-green-600">
         <div className="text-center text-white">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
           <p className="text-lg">Loading VR Garden...</p>
-          <p className="text-sm opacity-80">
-            {videoLoading ? 'Preparing 360° video experience' : 'Preparing your immersive experience'}
-          </p>
+          <p className="text-sm opacity-80">Preparing your immersive experience</p>
         </div>
       </div>
     );
   }
 
-  // Error state
-  if (error && !currentVideo) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-b from-red-900 to-red-600">
-        <div className="text-center text-white max-w-md">
-          <AlertCircle className="w-12 h-12 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-2">Failed to Load VR Garden</h2>
-          <p className="mb-4 opacity-90">{error}</p>
-          <Button 
-            onClick={() => window.location.reload()} 
-            variant="outline"
-            className="text-white border-white hover:bg-white hover:text-red-600"
-          >
-            Try Again
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // Auto-switch to 3D mode if no video available
+  useEffect(() => {
+    if (!videoLoading && !currentVideo && viewMode === 'video') {
+      setViewMode('3d');
+    }
+  }, [currentVideo, videoLoading, viewMode]);
 
   const VRScene: React.FC = () => {
     const { session } = useXR();
