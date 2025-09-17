@@ -1,8 +1,8 @@
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState, Suspense, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Box, Sphere } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
-import { Loader2, AlertCircle, Video, Eye } from 'lucide-react';
+import { Loader2, AlertCircle, Video, Eye, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Plant {
@@ -23,8 +23,14 @@ export const VRGarden: React.FC = () => {
   const [plants, setPlants] = useState<Plant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showVideo, setShowVideo] = useState(true); // Default to video mode
+  const [showVideo, setShowVideo] = useState(true);
   const [show3D, setShow3D] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
+  const videoContainerRef = useRef<HTMLDivElement>(null);
   
   // YouTube video ID extracted from the provided URL
   const youtubeVideoId = 'pwymX2LxnQs';
@@ -58,6 +64,78 @@ export const VRGarden: React.FC = () => {
 
     loadPlants();
   }, []);
+
+  // VR Controls - Mouse interaction for rotation
+  useEffect(() => {
+    const handleMouseDown = (e: MouseEvent) => {
+      if (!showVideo) return;
+      setIsDragging(true);
+      setLastMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !showVideo) return;
+      
+      const deltaX = e.clientX - lastMousePos.x;
+      const deltaY = e.clientY - lastMousePos.y;
+      
+      setRotation(prev => ({
+        x: Math.max(-45, Math.min(45, prev.x + deltaY * 0.1)),
+        y: prev.y + deltaX * 0.1
+      }));
+      
+      setLastMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!showVideo) return;
+      e.preventDefault();
+      setZoom(prev => Math.max(0.5, Math.min(2, prev + (e.deltaY > 0 ? -0.1 : 0.1))));
+    };
+
+    if (showVideo) {
+      document.addEventListener('mousedown', handleMouseDown);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('wheel', handleWheel, { passive: false });
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('wheel', handleWheel);
+    };
+  }, [isDragging, lastMousePos, showVideo]);
+
+  // Fullscreen toggle
+  const toggleFullscreen = async () => {
+    if (!isFullscreen) {
+      try {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } catch (error) {
+        console.error('Failed to enter fullscreen:', error);
+      }
+    } else {
+      try {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      } catch (error) {
+        console.error('Failed to exit fullscreen:', error);
+      }
+    }
+  };
+
+  // Reset VR view
+  const resetView = () => {
+    setRotation({ x: 0, y: 0 });
+    setZoom(1);
+  };
 
   // Simple 3D Scene Component
   const SimpleGardenScene: React.FC = () => {
@@ -131,55 +209,90 @@ export const VRGarden: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full h-screen bg-black">
-      {/* Top Controls */}
-      <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-start">
-        {/* Status Display */}
-        <div className="bg-black/80 text-white px-4 py-2 rounded-lg backdrop-blur-sm">
-          <h3 className="font-bold text-sm">🌿 VR Herbal Garden</h3>
-          <p className="text-xs opacity-90">Immersive Experience</p>
-        </div>
-        
-        {/* Toggle Controls */}
-        <div className="flex gap-2">
-          <Button
-            onClick={() => setShow3D(!show3D)}
-            className="bg-green-600 hover:bg-green-700 text-white"
-            size="sm"
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            {show3D ? 'Hide 3D View' : 'View 3D Garden'}
-          </Button>
-          <Button
-            onClick={() => setShowVideo(!showVideo)}
-            className="bg-red-600 hover:bg-red-700 text-white"
-            size="sm"
-          >
-            <Video className="w-4 h-4 mr-2" />
-            {showVideo ? 'Hide Video' : 'Show Video'}
-          </Button>
-        </div>
-      </div>
-
-      {/* Primary YouTube Video Experience */}
+    <div className={`relative w-full ${isFullscreen ? 'h-screen' : 'h-screen'} bg-black overflow-hidden`}>
+      {/* Full Screen VR Video Experience */}
       {showVideo && (
-        <div className="absolute inset-0 z-10">
+        <div 
+          ref={videoContainerRef}
+          className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing"
+          style={{
+            transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(${zoom})`,
+            transformOrigin: 'center center',
+            transition: isDragging ? 'none' : 'transform 0.2s ease-out'
+          }}
+        >
           <iframe
-            src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1&fs=1&cc_load_policy=1&iv_load_policy=3&autohide=0`}
-            title="VR Herbal Garden Tour - Immersive Experience"
+            src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1&fs=0&cc_load_policy=0&iv_load_policy=3&autohide=1&loop=1&playlist=${youtubeVideoId}`}
+            title="VR Herbal Garden Tour - Immersive 360° Experience"
             className="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
             style={{
+              width: '100vw',
+              height: '100vh',
               position: 'absolute',
               top: 0,
               left: 0,
-              width: '100%',
-              height: '100%',
             }}
           />
         </div>
       )}
+
+      {/* VR Controls - Only show when video is active */}
+      {showVideo && (
+        <div className="absolute top-4 right-4 z-50 flex flex-col gap-2">
+          <Button
+            onClick={resetView}
+            className="bg-black/70 hover:bg-black/90 text-white border border-white/20 backdrop-blur-sm"
+            size="sm"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </Button>
+          <Button
+            onClick={() => setZoom(prev => Math.min(2, prev + 0.2))}
+            className="bg-black/70 hover:bg-black/90 text-white border border-white/20 backdrop-blur-sm"
+            size="sm"
+          >
+            <ZoomIn className="w-4 h-4" />
+          </Button>
+          <Button
+            onClick={() => setZoom(prev => Math.max(0.5, prev - 0.2))}
+            className="bg-black/70 hover:bg-black/90 text-white border border-white/20 backdrop-blur-sm"
+            size="sm"
+          >
+            <ZoomOut className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
+
+      {/* VR Instructions */}
+      {showVideo && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50 bg-black/60 text-white px-6 py-3 rounded-lg backdrop-blur-sm text-center max-w-md">
+          <p className="text-sm font-semibold mb-1">🌿 VR Garden Experience 🌿</p>
+          <p className="text-xs opacity-90">
+            Drag to rotate • Scroll to zoom • Use controls to reset view
+          </p>
+        </div>
+      )}
+
+      {/* Toggle Controls - Top Left */}
+      <div className="absolute top-4 left-4 z-50 flex gap-2">
+        <Button
+          onClick={() => setShow3D(!show3D)}
+          className="bg-green-600/80 hover:bg-green-700 text-white backdrop-blur-sm"
+          size="sm"
+        >
+          <Eye className="w-4 h-4 mr-2" />
+          {show3D ? 'Hide 3D' : '3D View'}
+        </Button>
+        <Button
+          onClick={toggleFullscreen}
+          className="bg-blue-600/80 hover:bg-blue-700 text-white backdrop-blur-sm"
+          size="sm"
+        >
+          {isFullscreen ? 'Exit VR' : 'VR Mode'}
+        </Button>
+      </div>
 
       {/* Optional 3D Scene Overlay */}
       {show3D && (
@@ -209,7 +322,6 @@ export const VRGarden: React.FC = () => {
             </Suspense>
           </Canvas>
           
-          {/* 3D Instructions */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center text-white">
             <p className="text-lg font-semibold mb-2">🌿 3D Preview Garden 🌿</p>
             <p className="text-sm opacity-90">Click and drag to explore • Scroll to zoom</p>
@@ -217,34 +329,26 @@ export const VRGarden: React.FC = () => {
         </div>
       )}
 
-      {/* Bottom Instructions for Video */}
-      {showVideo && !show3D && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 bg-black/60 text-white px-6 py-3 rounded-lg backdrop-blur-sm text-center">
-          <p className="text-lg font-semibold mb-1">🎥 VR Garden Tour</p>
-          <p className="text-sm opacity-90">Experience the immersive virtual herbal garden tour</p>
-        </div>
-      )}
-
-      {/* Fallback when both are hidden */}
+      {/* Fallback when video is hidden */}
       {!showVideo && !show3D && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-b from-green-900 to-green-600">
           <div className="text-center text-white max-w-md">
             <h2 className="text-2xl font-bold mb-4">🌿 Virtual Herbal Garden</h2>
-            <p className="mb-6 opacity-90">Choose your experience mode above</p>
+            <p className="mb-6 opacity-90">Choose your experience mode</p>
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => setShowVideo(true)}
                 className="bg-red-600 hover:bg-red-700 text-white"
               >
                 <Video className="w-4 h-4 mr-2" />
-                Watch VR Tour
+                VR Tour
               </Button>
               <Button
                 onClick={() => setShow3D(true)}
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
                 <Eye className="w-4 h-4 mr-2" />
-                View 3D Garden
+                3D Garden
               </Button>
             </div>
           </div>
