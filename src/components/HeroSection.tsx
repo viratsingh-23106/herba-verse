@@ -83,7 +83,7 @@ export function HeroSection({ onExplore, onSearch }: HeroSectionProps) {
               onClick={onSearch}
               variant="outline"
               size="lg"
-              className="px-8 py-4 text-lg font-semibold border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 backdrop-blur-sm min-w-[200px]"
+              className="px-8 py-4 text-lg font-semibold border-primary-foreground/30 text-black hover:bg-primary-foreground/10 backdrop-blur-sm min-w-[200px]"
             >
               <Search className="w-5 h-5 mr-2" />
               Quick Search

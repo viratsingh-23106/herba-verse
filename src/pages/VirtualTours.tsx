@@ -233,6 +233,15 @@ const VirtualTours = () => {
                 <Card key={tour.id} className="hover:shadow-lg transition-shadow overflow-hidden">
                   {/* Tour Image/Header */}
                   <div className="h-48 bg-gradient-botanical relative overflow-hidden">
+                    {tour.cover_image_url ? (
+                      <img
+                        src={tour.cover_image_url}
+                        alt={getTourTitle(tour)}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-botanical" />
+                    )}
                     <div className="absolute inset-0 bg-black/20" />
                     <div className="absolute bottom-4 left-4 right-4">
                       <div className="flex items-center gap-2 text-white mb-2">
@@ -244,7 +253,7 @@ const VirtualTours = () => {
                       </h3>
                     </div>
                     
-                    {/* Status Badge */}
+                    {/* Status Badge */} 
                     {isCompleted && (
                       <div className="absolute top-4 right-4">
                         <Badge className="bg-green-500 text-white">
