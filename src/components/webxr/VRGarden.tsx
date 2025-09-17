@@ -94,7 +94,8 @@ export const VRGarden: React.FC = () => {
     const handleWheel = (e: WheelEvent) => {
       if (!showVideo) return;
       e.preventDefault();
-      setZoom(prev => Math.max(0.5, Math.min(2, prev + (e.deltaY > 0 ? -0.1 : 0.1))));
+      // Scroll up (negative deltaY) = zoom in, Scroll down (positive deltaY) = zoom out
+      setZoom(prev => Math.max(0.5, Math.min(2, prev + (e.deltaY < 0 ? 0.1 : -0.1))));
     };
 
     if (showVideo) {
@@ -275,11 +276,11 @@ export const VRGarden: React.FC = () => {
         </div>
       )}
 
-      {/* Toggle Controls - Top Left */}
-      <div className="absolute top-4 left-4 z-50 flex gap-2">
+      {/* Toggle Controls - Bottom Left */}
+      <div className="absolute bottom-20 left-4 z-50 flex flex-col gap-2">
         <Button
           onClick={() => setShow3D(!show3D)}
-          className="bg-green-600/80 hover:bg-green-700 text-white backdrop-blur-sm"
+          className="bg-green-600/90 hover:bg-green-700 text-white backdrop-blur-md shadow-lg border border-white/20"
           size="sm"
         >
           <Eye className="w-4 h-4 mr-2" />
@@ -287,7 +288,7 @@ export const VRGarden: React.FC = () => {
         </Button>
         <Button
           onClick={toggleFullscreen}
-          className="bg-blue-600/80 hover:bg-blue-700 text-white backdrop-blur-sm"
+          className="bg-blue-600/90 hover:bg-blue-700 text-white backdrop-blur-md shadow-lg border border-white/20"
           size="sm"
         >
           {isFullscreen ? 'Exit VR' : 'VR Mode'}
