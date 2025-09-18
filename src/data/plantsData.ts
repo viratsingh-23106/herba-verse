@@ -20,7 +20,7 @@ export interface Plant {
   preparationMethods: string[];
   dosage: string;
   precautions: string[];
-  references: string[];
+  references: { text: string; url: string }[];
   ayurvedicProperties?: {
     rasa: string; // Taste
     guna: string; // Quality
@@ -46,8 +46,8 @@ export const plantsData: Plant[] = [
     dosage: "External: Apply gel directly to skin. Internal: 1-2 tablespoons of juice daily (consult healthcare provider)",
     precautions: ["May cause allergic reactions in some individuals", "Internal use should be limited", "Not recommended during pregnancy"],
     references: [
-      "Surjushe, A., et al. (2008). Aloe vera: a short review. Indian Journal of Dermatology",
-      "Ayurvedic Pharmacopoeia of India, Part I, Volume VI"
+      { text: "Surjushe, A., et al. (2008). Aloe vera: a short review. Indian Journal of Dermatology", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2763764/" },
+      { text: "Ayurvedic Pharmacopoeia of India, Part I, Volume VI", url: "https://www.ayush.gov.in/docs/ayurvedic-pharmacopoeia.pdf" }
     ],
     ayurvedicProperties: {
       rasa: "Tikta (Bitter), Kashaya (Astringent)",
@@ -72,8 +72,8 @@ export const plantsData: Plant[] = [
     dosage: "1-3 grams daily as powder, or 1-2 teaspoons fresh paste. For therapeutic use, consult healthcare provider.",
     precautions: ["May increase bleeding risk", "Can interfere with certain medications", "High doses may cause stomach upset"],
     references: [
-      "Aggarwal, B.B., et al. (2007). Curcumin: the Indian solid gold. Advances in Experimental Medicine",
-      "Ayurvedic Pharmacopoeia of India, Part I, Volume I"
+      { text: "Aggarwal, B.B., et al. (2007). Curcumin: the Indian solid gold. Advances in Experimental Medicine", url: "https://pubmed.ncbi.nlm.nih.gov/17569207/" },
+      { text: "Ayurvedic Pharmacopoeia of India, Part I, Volume I", url: "https://www.ayush.gov.in/docs/ayurvedic-pharmacopoeia.pdf" }
     ],
     ayurvedicProperties: {
       rasa: "Tikta (Bitter), Katu (Pungent)",
@@ -98,8 +98,8 @@ export const plantsData: Plant[] = [
     dosage: "Leaves: 2-4 grams powder daily. Oil: External use only. Consult healthcare provider for internal use.",
     precautions: ["Not recommended during pregnancy", "May lower blood sugar", "Can be toxic in large quantities"],
     references: [
-      "Biswas, K., et al. (2002). Biological activities and medicinal properties of neem. Current Science",
-      "Ayurvedic Pharmacopoeia of India, Part I, Volume II"
+      { text: "Biswas, K., et al. (2002). Biological activities and medicinal properties of neem. Current Science", url: "https://www.currentscience.ac.in/Downloads/article_id_082_11_1336_1345_0.pdf" },
+      { text: "Ayurvedic Pharmacopoeia of India, Part I, Volume II", url: "https://www.ayurveda.hu/api/API-Vol-1.pdf" }
     ],
     ayurvedicProperties: {
       rasa: "Tikta (Bitter), Kashaya (Astringent)",

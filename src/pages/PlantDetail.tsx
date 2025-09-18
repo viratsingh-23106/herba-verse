@@ -278,7 +278,7 @@ const PlantDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* 3D Viewer */}
           <div className="space-y-4">
-            <Enhanced3DViewer plant={plant} />
+            <Enhanced3DViewer plant ={plant} />
             
             {/* Plant Images */}
             {'realImages' in plant && plant.realImages && plant.realImages.length > 0 ? (
@@ -510,15 +510,22 @@ const PlantDetail = () => {
                       <BookOpen className="w-5 h-5" />
                       Scientific References
                     </h3>
-                    {plant.references.map((reference, index) => (
-                      <div key={index} className="p-4 bg-muted/30 rounded-lg">
-                        <div className="flex items-start gap-3">
-                          <span className="text-sm font-medium text-primary">{index + 1}.</span>
-                          <p className="text-muted-foreground flex-1">{reference}</p>
-                          <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                        </div>
-                      </div>
-                    ))}
+                {plant.references.map((reference, index) => (
+                  <div key={index} className="p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <span className="text-sm font-medium text-primary">{index + 1}.</span>
+                      <a
+                        href={reference.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground flex-1 hover:underline"
+                      >
+                        {reference.text}
+                      </a>
+                      <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                  </div>
+                ))}
                   </div>
                 ) : (
                   <p className="text-muted-foreground">References information not available for this plant.</p>
