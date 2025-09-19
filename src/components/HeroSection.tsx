@@ -93,11 +93,11 @@ export function HeroSection({ onExplore, onSearch }: HeroSectionProps) {
           {/* Stats */}
           <div className="flex justify-center gap-8 pt-8 text-primary-foreground/80">
             <div className="text-center">
-              <div className="text-2xl font-bold">100+</div>
+              <div className="text-2xl font-bold">10+</div>
               <div className="text-sm">Medicinal Plants</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold">50+</div>
+              <div className="text-2xl font-bold">30+</div>
               <div className="text-sm">Health Benefits</div>
             </div>
             <div className="text-center">

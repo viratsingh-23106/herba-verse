@@ -278,7 +278,7 @@ const PlantDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* 3D Viewer */}
           <div className="space-y-4">
-            <Enhanced3DViewer plant ={plant} />
+            <Enhanced3DViewer plant={plant} />
             
             {/* Plant Images */}
             {'realImages' in plant && plant.realImages && plant.realImages.length > 0 ? (
