@@ -9,50 +9,26 @@ import { Trophy, Clock, Target, Award, Play, CheckCircle, Sparkles, RefreshCw } 
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
-// Mock quiz data - in a real app, this would come from the database
-const QUIZ_DATA = {
-  id: 'plant-identification-basic',
-  title: 'Plant Identification Basics',
-  titleHi: 'पौधे की पहचान की मूल बातें',
-  description: 'Test your knowledge of common medicinal plants',
-  descriptionHi: 'सामान्य औषधीय पौधों के बारे में अपने ज्ञान का परीक्षण करें',
-  difficulty: 1,
-  questions: [
-    {
-      id: 1,
-      type: 'multiple-choice',
-      question: 'Which plant is known as the "village pharmacy" in India?',
-      questionHi: 'भारत में किस पौधे को "गाँव की दवाखाना" कहा जाता है?',
-      options: ['Aloe Vera', 'Neem', 'Turmeric', 'Tulsi'],
-      optionsHi: ['एलोवेरा', 'नीम', 'हल्दी', 'तुलसी'],
-      correctAnswer: 1,
-      explanation: 'Neem is called the "village pharmacy" because of its numerous medicinal properties.',
-      explanationHi: 'नीम को "गाँव की दवाखाना" इसलिए कहा जाता है क्योंकि इसके कई औषधीय गुण हैं।'
-    },
-    {
-      id: 2,
-      type: 'multiple-choice',
-      question: 'What is the active compound in turmeric that gives it anti-inflammatory properties?',
-      questionHi: 'हल्दी में कौन सा सक्रिय यौगिक है जो इसे सूजनरोधी गुण देता है?',
-      options: ['Curcumin', 'Allicin', 'Aloin', 'Gingerol'],
-      optionsHi: ['करक्यूमिन', 'एलिसिन', 'एलोइन', 'जिंजेरोल'],
-      correctAnswer: 0,
-      explanation: 'Curcumin is the main active compound in turmeric responsible for its golden color and anti-inflammatory properties.',
-      explanationHi: 'करक्यूमिन हल्दी का मुख्य सक्रिय यौगिक है जो इसके सुनहरे रंग और सूजनरोधी गुणों के लिए जिम्मेदार है।'
-    },
-    {
-      id: 3,
-      type: 'multiple-choice',
-      question: 'Which part of the Aloe Vera plant is primarily used for medicinal purposes?',
-      questionHi: 'एलोवेरा के पौधे का कौन सा भाग मुख्यतः औषधीय उद्देश्यों के लिए उपयोग किया जाता है?',
-      options: ['Roots', 'Flowers', 'Gel from leaves', 'Seeds'],
-      optionsHi: ['जड़ें', 'फूल', 'पत्तियों का जेल', 'बीज'],
-      correctAnswer: 2,
-      explanation: 'The clear gel inside Aloe Vera leaves contains the healing compounds used for skin treatment and other medicinal purposes.',
-      explanationHi: 'एलोवेरा की पत्तियों के अंदर का साफ जेल त्वचा के इलाज और अन्य औषधीय उद्देश्यों के लिए उपयोग होने वाले चिकित्सक यौगिक हैं।'
-    }
-  ]
-};
+// Quiz data structure type
+interface QuizData {
+  id: string;
+  title: string;
+  titleHi?: string;
+  description?: string;
+  descriptionHi?: string;
+  difficulty?: number;
+  questions: Array<{
+    id: number;
+    type: string;
+    question: string;
+    questionHi?: string;
+    options: string[];
+    optionsHi?: string[];
+    correctAnswer: number;
+    explanation: string;
+    explanationHi?: string;
+  }>;
+}
 
 const QuizPage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -62,27 +38,34 @@ const QuizPage = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
   const [startTime] = useState(Date.now());
-  const [quizData, setQuizData] = useState(QUIZ_DATA);
+  const [quizData, setQuizData] = useState<QuizData | null>(null);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
 
+  // Auto-generate quiz on component mount
   useEffect(() => {
-    if (!quizCompleted) {
+    generateAIQuiz();
+  }, []);
+
+  useEffect(() => {
+    if (!quizCompleted && quizData) {
       const timer = setInterval(() => {
         setTimeElapsed(Math.floor((Date.now() - startTime) / 1000));
       }, 1000);
       
       return () => clearInterval(timer);
     }
-  }, [quizCompleted, startTime]);
+  }, [quizCompleted, startTime, quizData]);
 
-  const question = quizData.questions[currentQuestion];
-  const progress = ((currentQuestion + 1) / quizData.questions.length) * 100;
+  const question = quizData?.questions[currentQuestion];
+  const progress = quizData ? ((currentQuestion + 1) / quizData.questions.length) * 100 : 0;
 
   const handleAnswerSelect = (answerIndex: number) => {
+    if (!question) return;
     setSelectedAnswer(answerIndex);
     setShowExplanation(true);
     
@@ -92,6 +75,7 @@ const QuizPage = () => {
   };
 
   const handleNextQuestion = () => {
+    if (!quizData) return;
     if (currentQuestion < quizData.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
@@ -102,12 +86,12 @@ const QuizPage = () => {
   };
 
   const completeQuiz = async () => {
+    if (!quizData || !question) return;
     setQuizCompleted(true);
     const finalScore = score + (selectedAnswer === question.correctAnswer ? 1 : 0);
     
     // Save quiz results to database if user is logged in
     if (user) {
-      // This would typically save to the database
       console.log('Saving quiz results:', {
         userId: user.id,
         quizId: quizData.id,
@@ -117,7 +101,6 @@ const QuizPage = () => {
       });
     }
 
-    // Show completion toast
     toast({
       title: "Quiz Completed!",
       description: `You scored ${finalScore}/${quizData.questions.length}`,
@@ -127,10 +110,12 @@ const QuizPage = () => {
   const generateAIQuiz = async () => {
     setIsGeneratingAI(true);
     try {
-      toast({
-        title: "Generating AI Quiz...",
-        description: "Please wait while we create a new quiz for you",
-      });
+      if (!isInitialLoad) {
+        toast({
+          title: "Generating AI Quiz...",
+          description: "Please wait while we create a new quiz for you",
+        });
+      }
       
       const { data, error } = await supabase.functions.invoke('generate-quiz', {
         body: { 
@@ -143,17 +128,42 @@ const QuizPage = () => {
       if (error) throw error;
 
       if (data?.success && data?.quiz) {
-        setQuizData(data.quiz);
+        // Map AI response to expected format
+        const mappedQuiz: QuizData = {
+          id: 'ai-generated-quiz',
+          title: data.quiz.title_en || 'Medicinal Plants Quiz',
+          titleHi: data.quiz.title_hi,
+          description: data.quiz.description_en,
+          descriptionHi: data.quiz.description_hi,
+          difficulty: 2,
+          questions: data.quiz.questions.map((q: any, index: number) => ({
+            id: index + 1,
+            type: 'multiple-choice',
+            question: q.question_en,
+            questionHi: q.question_hi,
+            options: q.options,
+            optionsHi: q.options_hi,
+            correctAnswer: q.correct_answer,
+            explanation: q.explanation_en,
+            explanationHi: q.explanation_hi
+          }))
+        };
+
+        setQuizData(mappedQuiz);
         setCurrentQuestion(0);
         setSelectedAnswer(null);
         setScore(0);
         setShowExplanation(false);
         setQuizCompleted(false);
         setTimeElapsed(0);
-        toast({
-          title: "AI Quiz Ready!",
-          description: "Your personalized quiz has been generated",
-        });
+        
+        if (!isInitialLoad) {
+          toast({
+            title: "AI Quiz Ready!",
+            description: "Your personalized quiz has been generated",
+          });
+        }
+        setIsInitialLoad(false);
       } else {
         throw new Error('Invalid quiz data received');
       }
@@ -161,23 +171,15 @@ const QuizPage = () => {
       console.error('Error generating AI quiz:', error);
       toast({
         title: "Error",
-        description: "Failed to generate AI quiz. Using default quiz.",
+        description: "Failed to generate AI quiz. Please try again.",
         variant: "destructive",
       });
+      setIsInitialLoad(false);
     } finally {
       setIsGeneratingAI(false);
     }
   };
 
-  const resetQuiz = () => {
-    setQuizData(QUIZ_DATA);
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setScore(0);
-    setShowExplanation(false);
-    setQuizCompleted(false);
-    setTimeElapsed(0);
-  };
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -190,6 +192,25 @@ const QuizPage = () => {
     if (percentage >= 60) return 'text-yellow-600';
     return 'text-red-600';
   };
+
+  // Loading state
+  if (isInitialLoad || !quizData) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle pt-16 pb-16 flex items-center justify-center">
+        <Card className="w-full max-w-md shadow-botanical">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <Sparkles className="h-12 w-12 text-primary animate-pulse mx-auto" />
+              <h2 className="text-xl font-semibold">Generating Your Quiz...</h2>
+              <p className="text-muted-foreground">
+                AI is creating a personalized medicinal plants quiz for you
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (quizCompleted) {
     const finalScore = score;
@@ -272,14 +293,7 @@ const QuizPage = () => {
                   className="bg-gradient-garden hover:opacity-90"
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
-                  {isGeneratingAI ? 'Generating...' : 'Generate AI Quiz'}
-                </Button>
-                <Button 
-                  onClick={resetQuiz} 
-                  variant="outline"
-                >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Retake Quiz
+                  {isGeneratingAI ? 'Generating...' : 'Generate New Quiz'}
                 </Button>
                 <Button 
                   onClick={() => window.history.back()}
