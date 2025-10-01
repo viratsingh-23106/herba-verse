@@ -128,5 +128,5 @@ export const additionalPlants = [
   preparationMethods: ["Powder", "Extract"],
   dosage: "As directed by healthcare provider",
   precautions: ["Consult healthcare provider before use"],
-  references: ["Traditional Ayurvedic texts"]
+  references: [{ text: "Traditional Ayurvedic texts", url: "" }]
 }));

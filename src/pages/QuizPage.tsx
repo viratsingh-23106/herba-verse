@@ -5,14 +5,17 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Trophy, Clock, Target, Award, Play, CheckCircle } from 'lucide-react';
+import { Trophy, Clock, Target, Award, Play, CheckCircle, Sparkles, RefreshCw } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 // Mock quiz data - in a real app, this would come from the database
 const QUIZ_DATA = {
   id: 'plant-identification-basic',
   title: 'Plant Identification Basics',
+  titleHi: 'पौधे की पहचान की मूल बातें',
   description: 'Test your knowledge of common medicinal plants',
+  descriptionHi: 'सामान्य औषधीय पौधों के बारे में अपने ज्ञान का परीक्षण करें',
   difficulty: 1,
   questions: [
     {
@@ -59,6 +62,8 @@ const QuizPage = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
   const [startTime] = useState(Date.now());
+  const [quizData, setQuizData] = useState(QUIZ_DATA);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
   const { user } = useAuth();
   const { t, language } = useLanguage();
@@ -74,8 +79,8 @@ const QuizPage = () => {
     }
   }, [quizCompleted, startTime]);
 
-  const question = QUIZ_DATA.questions[currentQuestion];
-  const progress = ((currentQuestion + 1) / QUIZ_DATA.questions.length) * 100;
+  const question = quizData.questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / quizData.questions.length) * 100;
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
@@ -87,7 +92,7 @@ const QuizPage = () => {
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestion < QUIZ_DATA.questions.length - 1) {
+    if (currentQuestion < quizData.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
       setShowExplanation(false);
@@ -105,9 +110,9 @@ const QuizPage = () => {
       // This would typically save to the database
       console.log('Saving quiz results:', {
         userId: user.id,
-        quizId: QUIZ_DATA.id,
+        quizId: quizData.id,
         score: finalScore,
-        totalQuestions: QUIZ_DATA.questions.length,
+        totalQuestions: quizData.questions.length,
         timeSpent: timeElapsed
       });
     }
@@ -115,8 +120,63 @@ const QuizPage = () => {
     // Show completion toast
     toast({
       title: "Quiz Completed!",
-      description: `You scored ${finalScore}/${QUIZ_DATA.questions.length}`,
+      description: `You scored ${finalScore}/${quizData.questions.length}`,
     });
+  };
+
+  const generateAIQuiz = async () => {
+    setIsGeneratingAI(true);
+    try {
+      toast({
+        title: "Generating AI Quiz...",
+        description: "Please wait while we create a new quiz for you",
+      });
+      
+      const { data, error } = await supabase.functions.invoke('generate-quiz', {
+        body: { 
+          topic: 'medicinal plants and their uses',
+          difficulty: 'medium',
+          numQuestions: 5
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.success && data?.quiz) {
+        setQuizData(data.quiz);
+        setCurrentQuestion(0);
+        setSelectedAnswer(null);
+        setScore(0);
+        setShowExplanation(false);
+        setQuizCompleted(false);
+        setTimeElapsed(0);
+        toast({
+          title: "AI Quiz Ready!",
+          description: "Your personalized quiz has been generated",
+        });
+      } else {
+        throw new Error('Invalid quiz data received');
+      }
+    } catch (error) {
+      console.error('Error generating AI quiz:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate AI quiz. Using default quiz.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  const resetQuiz = () => {
+    setQuizData(QUIZ_DATA);
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setScore(0);
+    setShowExplanation(false);
+    setQuizCompleted(false);
+    setTimeElapsed(0);
   };
 
   const formatTime = (seconds: number) => {
@@ -133,7 +193,7 @@ const QuizPage = () => {
 
   if (quizCompleted) {
     const finalScore = score;
-    const percentage = Math.round((finalScore / QUIZ_DATA.questions.length) * 100);
+    const percentage = Math.round((finalScore / quizData.questions.length) * 100);
     
     return (
       <div className="min-h-screen bg-gradient-subtle pt-16 pb-16">
@@ -149,7 +209,7 @@ const QuizPage = () => {
                 {t('quiz.completed')}
               </CardTitle>
               <CardDescription className="text-lg">
-                Great job completing the quiz!
+                {language === 'hi' ? quizData.titleHi || quizData.title : quizData.title}
               </CardDescription>
             </CardHeader>
             
@@ -161,7 +221,7 @@ const QuizPage = () => {
                     {finalScore}
                   </span>
                   <span className="text-muted-foreground">
-                    /{QUIZ_DATA.questions.length}
+                    /{quizData.questions.length}
                   </span>
                 </div>
                 <div className="text-xl text-muted-foreground">
@@ -205,16 +265,25 @@ const QuizPage = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 justify-center">
+              <div className="flex gap-3 justify-center flex-wrap">
                 <Button 
-                  onClick={() => window.location.reload()} 
+                  onClick={generateAIQuiz}
+                  disabled={isGeneratingAI}
+                  className="bg-gradient-garden hover:opacity-90"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  {isGeneratingAI ? 'Generating...' : 'Generate AI Quiz'}
+                </Button>
+                <Button 
+                  onClick={resetQuiz} 
                   variant="outline"
                 >
+                  <RefreshCw className="h-4 w-4 mr-2" />
                   Retake Quiz
                 </Button>
                 <Button 
                   onClick={() => window.history.back()}
-                  className="bg-gradient-garden hover:opacity-90"
+                  variant="outline"
                 >
                   Continue Learning
                 </Button>
@@ -231,25 +300,36 @@ const QuizPage = () => {
       <div className="container mx-auto px-4 max-w-3xl">
         {/* Quiz Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
             <h1 className="text-3xl font-bold text-garden-emerald">
-              {language === 'hi' ? QUIZ_DATA.title : QUIZ_DATA.title}
+              {language === 'hi' ? (quizData.titleHi || quizData.title) : quizData.title}
             </h1>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                {formatTime(timeElapsed)}
-              </div>
-              <div className="flex items-center gap-1">
-                <Trophy className="h-4 w-4" />
-                {score}/{currentQuestion + (showExplanation ? 1 : 0)}
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={generateAIQuiz}
+                disabled={isGeneratingAI}
+                size="sm"
+                className="bg-gradient-garden hover:opacity-90"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                {isGeneratingAI ? 'Generating...' : 'AI Quiz'}
+              </Button>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  {formatTime(timeElapsed)}
+                </div>
+                <div className="flex items-center gap-1">
+                  <Trophy className="h-4 w-4" />
+                  {score}/{currentQuestion + (showExplanation ? 1 : 0)}
+                </div>
               </div>
             </div>
           </div>
           
           <Progress value={progress} className="w-full h-2" />
           <div className="flex justify-between text-sm text-muted-foreground mt-2">
-            <span>Question {currentQuestion + 1} of {QUIZ_DATA.questions.length}</span>
+            <span>Question {currentQuestion + 1} of {quizData.questions.length}</span>
             <span>{Math.round(progress)}% Complete</span>
           </div>
         </div>
@@ -258,7 +338,7 @@ const QuizPage = () => {
         <Card className="shadow-botanical">
           <CardHeader>
             <CardTitle className="text-xl">
-              {language === 'hi' ? question.questionHi : question.question}
+              {language === 'hi' ? (question.questionHi || question.question) : question.question}
             </CardTitle>
           </CardHeader>
           
@@ -266,7 +346,7 @@ const QuizPage = () => {
             {/* Answer Options */}
             <div className="grid gap-3">
               {question.options.map((option, index) => {
-                const optionText = language === 'hi' ? question.optionsHi[index] : option;
+                const optionText = language === 'hi' ? (question.optionsHi?.[index] || option) : option;
                 const isSelected = selectedAnswer === index;
                 const isCorrect = index === question.correctAnswer;
                 
@@ -312,7 +392,7 @@ const QuizPage = () => {
               <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <h4 className="font-semibold text-blue-900 mb-2">Explanation:</h4>
                 <p className="text-blue-800 text-sm">
-                  {language === 'hi' ? question.explanationHi : question.explanation}
+                  {language === 'hi' ? (question.explanationHi || question.explanation) : question.explanation}
                 </p>
               </div>
             )}
@@ -324,7 +404,7 @@ const QuizPage = () => {
                   onClick={handleNextQuestion}
                   className="bg-gradient-garden hover:opacity-90"
                 >
-                  {currentQuestion === QUIZ_DATA.questions.length - 1 
+                  {currentQuestion === quizData.questions.length - 1 
                     ? 'Complete Quiz' 
                     : t('quiz.next')
                   }
